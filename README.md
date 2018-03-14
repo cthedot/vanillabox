@@ -1,0 +1,2 @@
+# vightbox
+VanillaJS Lightbox
