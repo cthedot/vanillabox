@@ -1,0 +1,141 @@
+.vightbox {
+  z-index: 1001;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  transition: opacity 0.2s;
+  pointer-events: none;
+  opacity: 0;
+}
+.vightbox-open {
+  pointer-events: all;
+  opacity: 1;
+}
+
+.vightbox-button {
+  cursor: pointer;
+  color: #fff;
+  background: none;
+  border: none;
+  font-size: 3em;
+  line-height: 1;
+  display: block;
+  z-index: 100;
+  position: absolute;
+  text-align: center;
+  width: 1.5em;
+  height: 1.5em;
+  overflow: hidden;
+  transition: 0.2s;
+}
+.vightbox:hover .vightbox-button {
+  opacity: 0.5;
+}
+.vightbox-button.vightbox-button:hover,
+.vightbox-button.vightbox-button:focus {
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.2);
+  opacity: 1;
+}
+.vightbox-closer {
+  top: 0;
+  right: 0;
+  opacity: 0.25;
+}
+.vightbox-prev,
+.vightbox-next {
+  bottom: 1em;
+  opacity: 0;
+}
+.vightbox-prev {
+  left: 0;
+}
+.vightbox-next {
+  right: 0;
+}
+.vightbox-prev:after {
+  content: '<';
+}
+.vightbox-next:after {
+  content: '>';
+}
+
+.vightbox-title,
+.vightbox-status,
+.vightbox-info {
+  z-index: 90;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.5em;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+.vightbox-title {
+  pointer-events: none;
+  right: auto;
+}
+.vightbox-status {
+  pointer-events: none;
+  left: auto;
+}
+.vightbox-info {
+  top: 0;
+  bottom: auto;
+  left: 0;
+  right: 5em;
+}
+.vightbox-info {
+  opacity: 0;
+  transition: 0.2s;
+}
+.vightbox-info-visible {
+  opacity: 1;
+}
+
+.vightbox-singleitem .vightbox-prev,
+.vightbox-singleitem .vightbox-next,
+.vightbox-singleitem .vightbox-status {
+  display: none;
+}
+
+.vightbox-item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  transition: z-index 0s, opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+  z-index: 20;
+  opacity: 0;
+  transform: scale(0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.vightbox .vightbox-current {
+  z-index: 30;
+  opacity: 1;
+  transform: scale(1);
+}
+.vightbox .vightbox-out {
+  z-index: 10;
+  opacity: 0;
+  transform: scale(1);
+}
+.vightbox .vightbox-direct {
+  transition: none;
+}
+
+.vightbox img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+

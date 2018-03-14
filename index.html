@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="utf-8">
+  <title>vightbox VanillaJS lightbox</title>
+  <script>
+    document.documentElement.className = 'js';
+    window.addEventListener('error', function (e) {
+      document.documentElement.className = 'badjs'
+    });
+  </script>
+  <link rel="stylesheet" href="css/vightbox.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <h1>vightbox &ndash; VanillaJS lightbox</h1>
+
+  <ul id="vightbox">
+    <li>
+      <a href="/image/prev.gif" title="Slide 1">
+        <figure>
+          <img src="/image/prev.gif" alt="1">
+          <figcaption>Figcaption 1</figcaption>
+        </figure>
+      </a>
+    </li>
+    <li>
+      <a href="/image/next.gif" title="Slide 2">
+        <figure>
+          <img src="/image/next.gif" alt="2">
+          <figcaption>Figcaption 2</figcaption>
+        </figure>
+      </a>
+    </li>
+    <li>
+        <a href="/image/next.gif" title="Slide 3">
+          <figure>
+            <img src="/image/next.gif" alt="3">
+          </figure>
+        </a>
+      </li>
+  </ul>
+
+  <script src="js/vightbox.js"></script>
+  <script src="js/script.js"></script>
+</body>
+
+</html>
