@@ -10,6 +10,8 @@ Use mouse, keyboard or touch to navigate.
 
 Tested in Firefox, Chrome, Edge 16, IE11.
 
+Demo http://cthedot.de/vanillabox/
+
 ## Usage
 
     document.addEventListener("DOMContentLoaded", function() {
