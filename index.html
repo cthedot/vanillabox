@@ -3,47 +3,61 @@
 
 <head>
   <meta charset="utf-8">
-  <title>vightbox VanillaJS lightbox</title>
+  <title>vanillabox VanillaJS lightbox</title>
   <script>
     document.documentElement.className = 'js';
     window.addEventListener('error', function (e) {
       document.documentElement.className = 'badjs'
     });
   </script>
-  <link rel="stylesheet" href="css/vightbox.css">
+  <link rel="stylesheet" href="css/vanillabox.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-  <h1>vightbox &ndash; VanillaJS lightbox</h1>
+  <h1>vanillabox &ndash; VanillaJS lightbox</h1>
 
-  <ul id="vightbox">
+  <h2>Default</h2>
+  <ul class="box">
     <li>
-      <a href="/image/prev.gif" title="Slide 1">
+      <a href="/image/0.jpg" title="Slide 1">
         <figure>
-          <img src="/image/prev.gif" alt="1">
+          <img src="/image/0.jpg" alt="1">
           <figcaption>Figcaption 1</figcaption>
         </figure>
       </a>
     </li>
     <li>
-      <a href="/image/next.gif" title="Slide 2">
+      <a href="/image/1.jpg" title="Slide 2">
         <figure>
-          <img src="/image/next.gif" alt="2">
+          <img src="/image/1.jpg" alt="2">
           <figcaption>Figcaption 2</figcaption>
         </figure>
       </a>
     </li>
     <li>
-        <a href="/image/next.gif" title="Slide 3">
+        <a href="/image/2.jpg" title="Slide 3">
           <figure>
-            <img src="/image/next.gif" alt="3">
+            <img src="/image/2.jpg" alt="3">
           </figure>
         </a>
       </li>
   </ul>
 
-  <script src="js/vightbox.js"></script>
+  <h2>Single item</h2>
+
+  <ul class="box">
+    <li>
+      <a href="/image/0.jpg" title="Slide 1">
+        <figure>
+          <img src="/image/0.jpg" alt="1">
+          <figcaption>Figcaption 1</figcaption>
+        </figure>
+      </a>
+    </li>
+  </ul>
+
+  <script src="js/vanillabox.js"></script>
   <script src="js/script.js"></script>
 </body>
 

@@ -2,7 +2,8 @@
   'use strict';
 
   document.addEventListener("DOMContentLoaded", function() {
-    var $el = document.getElementById('vightbox')
-    window.box = vightbox($el)
+    var $extrabox = document.getElementById('extrabox')
+
+    window.boxes = vanillabox(document.querySelectorAll('.box'))
   })
 }())

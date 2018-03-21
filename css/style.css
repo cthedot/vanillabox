@@ -7,8 +7,16 @@ body {
 ul {
   list-style: none;
   display: flex;
+  flex-wrap: wrap;
   padding: 0;
 }
 ul a {
+  display: block;   
   margin: 1em;
+}
+ul a:focus {
+  border: 2px dotted;
+}
+ul img {
+  width: 30vw;
 }
