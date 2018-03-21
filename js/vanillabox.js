@@ -217,8 +217,11 @@
       if (direction === "left") {
         prev();
       }
-      if (direction === "right") {
+      else if (direction === "right") {
         next();
+      }
+      else {
+        close()
       }
     });
 
