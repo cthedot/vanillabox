@@ -44,46 +44,6 @@
     });
   }
 
-  var tabbableElements =
-    "a[href], area[href], input:not([disabled])," +
-    "select:not([disabled]), textarea:not([disabled])," +
-    "button:not([disabled]), iframe, object, embed, *[tabindex]," +
-    "*[contenteditable]";
-
-  function keepFocus(context) {
-    var allTabbableElements = context.querySelectorAll(tabbableElements);
-    var firstTabbableElement = allTabbableElements[0];
-    var lastTabbableElement =
-      allTabbableElements[allTabbableElements.length - 1];
-
-    var keyListener = function(event) {
-      var keyCode = event.which || event.keyCode; // Get the current keycode
-
-      // Polyfill to prevent the default behavior of events
-      event.preventDefault =
-        event.preventDefault ||
-        function() {
-          event.returnValue = false;
-        };
-
-      // If it is TAB
-      if (keyCode === 9) {
-        // Move focus to first element that can be tabbed if Shift isn't used
-        if (event.target === lastTabbableElement && !event.shiftKey) {
-          event.preventDefault();
-          firstTabbableElement.focus();
-
-          // Move focus to last element that can be tabbed if Shift is used
-        } else if (event.target === firstTabbableElement && event.shiftKey) {
-          event.preventDefault();
-          lastTabbableElement.focus();
-        }
-      }
-    };
-
-    context.addEventListener("keydown", keyListener, false);
-  }
-
   function initSwipe($e, handler) {
     var POINTER_EVENTS = window.PointerEvent ? true : false;
     var start = {};
@@ -155,6 +115,15 @@
   }
 
   // vanillabox
+  var FOCUSSABLES =
+    "a[href], area[href], input:not([disabled])," +
+    "select:not([disabled]), textarea:not([disabled])," +
+    "button:not([disabled]), iframe, object, embed, *[tabindex]," +
+    "*[contenteditable]";
+
+  var firstFocussable;
+  var lastFocussable;
+
   var settings;
   var prefix = "vanillabox";
   var alternate = true;
@@ -172,6 +141,7 @@
   };
   var $body;
   var $closer;
+  var $prev;
   var $next;
   var $vanillabox;
   var $title;
@@ -211,12 +181,11 @@
     $closer = $vanillabox.querySelector("." + prefix + "-closer");
     $closer.addEventListener("click", close, false);
 
+    $prev = $vanillabox.querySelector("." + prefix + "-prev");
+    $prev.addEventListener("click", prev, false);
+
     $next = $vanillabox.querySelector("." + prefix + "-next");
     $next.addEventListener("click", next, false);
-
-    $vanillabox
-      .querySelector("." + prefix + "-prev")
-      .addEventListener("click", prev, false);
 
     [].forEach.call(
       $vanillabox.querySelectorAll("." + prefix + "-item"),
@@ -237,8 +206,6 @@
     });
 
     $body.appendChild($vanillabox);
-
-    keepFocus($vanillabox);
 
     // EVENTS resize and touch
     window.addEventListener("resize", function(e) {
@@ -262,6 +229,15 @@
   function keyHandler(e) {
     if (state.isOpen) {
       switch (e.keyCode) {
+        case 9: // TAB
+          if (e.target === lastFocussable && !e.shiftKey) {
+            e.preventDefault();
+            firstFocussable.focus();
+          } else if (e.target === firstFocussable && e.shiftKey) {
+            e.preventDefault();
+            lastFocussable.focus();
+          }
+          break;
         case 27: // ESC
           close();
           break;
@@ -360,9 +336,6 @@
     }
   }
 
-  function openAria() {
-  }
-
   function close() {
     document.removeEventListener("keydown", keyHandler);
 
@@ -381,27 +354,32 @@
       }
     );
     $vanillabox.setAttribute("aria-hidden", "true");
-
     $focusBefore && $focusBefore.focus();
-
     state.isOpen = false;
     settings.closeCallback();
   }
 
   function open() {
     var singleitem = state.srcs.length === 1;
+    var focussables = $vanillabox.querySelectorAll(FOCUSSABLES);
 
+    firstFocussable = focussables[0];
+    lastFocussable = focussables[focussables.length - 1];
+    $focusBefore = document.activeElement;
     $vanillabox.classList[singleitem ? "add" : "remove"](
       prefix + "-singleitem"
     );
 
-    $focusBefore = document.activeElement;
-
     if (singleitem) {
       $closer.focus();
+      $next.setAttribute("disabled", true);
+      $prev.setAttribute("disabled", true);
     } else {
+      $next.removeAttribute("disabled");
+      $prev.removeAttribute("disabled");
       $next.focus();
     }
+
     if (!state.isOpen) {
       $items[0].querySelector("img").src = "";
       $items[1].querySelector("img").src = "";
