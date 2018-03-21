@@ -6,6 +6,10 @@ Uses I18N features like
 - focus stays in lightbox
 - aria-hidden is used to show/hide elements
 
+Use mouse, keyboard or touch to navigate.
+
+Tested in Firefox, Chrome, Edge 16, IE11.
+
 ## Usage
 
     document.addEventListener("DOMContentLoaded", function() {
