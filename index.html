@@ -36,12 +36,12 @@
       </a>
     </li>
     <li>
-        <a href="/image/2.jpg" title="Slide 3 small image, no caption">
-          <figure>
-            <img src="/image/2.jpg" alt="3">
-          </figure>
-        </a>
-      </li>
+      <a href="/image/2.jpg" title="Slide 3 small image, no caption">
+        <figure>
+          <img src="/image/2.jpg" alt="3">
+        </figure>
+      </a>
+    </li>
   </ul>
 
   <h2>Single item</h2>
@@ -58,7 +58,17 @@
   </ul>
 
   <script src="js/vanillabox.js"></script>
-  <script src="js/script.js"></script>
+  <script>
+    ; (function () {
+      'use strict';
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // var $extrabox = document.getElementById('extrabox')
+
+        window.boxes = vanillabox(document.querySelectorAll('.box'))
+      })
+    }());
+  </script>
 </body>
 
 </html>
