@@ -24,11 +24,11 @@ Uses I18N features like
 
 ## API
 
-  var box = vanillabox(
-    document.getElementById('singleitem')
-  )
+    var box = vanillabox(
+      document.getElementById('singleitem')
+    )
 
-  box.open()
-  box.prev()
-  box.next()
-  box.close()
+    box.open()
+    box.prev()
+    box.next()
+    box.close()
