@@ -10,64 +10,93 @@
       document.documentElement.className = 'badjs'
     });
   </script>
-  <link rel="stylesheet" href="css/vanillabox.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="vanillabox/vanillabox.css">
+  <style>
+    body {
+      font: normal 1em/1.5 sans-serif;
+      padding: 1em;
+      margin: 0;
+    }
+
+    ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      padding: 0;
+    }
+
+    main a {
+      display: block;
+      margin: 1em;
+    }
+
+    ul a:focus {
+      border: 2px dotted;
+    }
+
+    main img {
+      width: 30vw;
+    }
+  </style>
 </head>
 
 <body>
-  <h1>vanillabox &ndash; VanillaJS lightbox</h1>
+  <h1>vanillabox &ndash; VanillaJS image lightbox</h1>
 
-  <h2>Default</h2>
-  <ul class="box">
-    <li>
-      <a href="image/0.jpg" title="Slide 1">
-        <figure>
-          <img src="image/0.jpg" alt="1">
-          <figcaption>Landscape large</figcaption>
-        </figure>
-      </a>
-    </li>
-    <li>
-      <a href="image/1.jpg" title="Slide 2">
-        <figure>
-          <img src="image/1.jpg" alt="2">
-          <figcaption>Portrait large</figcaption>
-        </figure>
-      </a>
-    </li>
-    <li>
-      <a href="image/2.jpg" title="Slide 3 small image, no caption">
-        <figure>
-          <img src="image/2.jpg" alt="3">
-        </figure>
-      </a>
-    </li>
-  </ul>
+  <main>
+    <h2>Default</h2>
+    <ul class="box">
+      <li>
+        <a href="image/0.jpg" title="Slide 1">
+          <figure>
+            <img src="image/0t.jpg" alt="1">
+            <figcaption>Landscape large</figcaption>
+          </figure>
+        </a>
+      </li>
+      <li>
+        <a href="image/1.jpg" title="Slide 2">
+          <figure>
+            <img src="image/1.jpg" alt="2">
+            <figcaption>Portrait large</figcaption>
+          </figure>
+        </a>
+      </li>
+      <li>
+        <a href="image/2.jpg" title="Slide 3 small image, no caption">
+          <figure>
+            <img src="image/2.jpg" alt="3">
+          </figure>
+        </a>
+      </li>
+    </ul>
 
-  <h2>Single item</h2>
+    <h2>Single item</h2>
 
-  <ul class="box">
-    <li>
-      <a href="image/0.jpg" title="title">
+    <ul class="box">
+      <li>
+        <a href="image/0.jpg" title="title">
+          <figure>
+            <img src="image/0t.jpg" alt="1">
+            <figcaption>Description (info)</figcaption>
+          </figure>
+        </a>
+      </li>
+    </ul>
+
+    <h2>link with box</h2>
+    <div>
+      <a href="image/0.jpg" title="title" class="box">
         <figure>
-          <img src="image/0.jpg" alt="1">
+          <img src="image/0t.jpg" alt="1">
           <figcaption>Description (info)</figcaption>
         </figure>
       </a>
-    </li>
-  </ul>
+    </div>
 
-  <h2>link with box</h2>
-  <div>
-    <a href="image/0.jpg" title="title" class="box">
-      <figure>
-        <img src="image/0.jpg" alt="1">
-        <figcaption>Description (info)</figcaption>
-      </figure>
-    </a>
-  </div>
+  </main>
 
-  <script src="js/vanillabox.js"></script>
+  <script src="vanillabox/vanillabox.js"></script>
   <script>
     ; (function () {
       'use strict';
