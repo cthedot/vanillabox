@@ -1,12 +1,12 @@
 /*
- * a simple lightbox, with keyboard, mouse and touch interaction
- *
- * usage:
- *    call ``vanillabox($element)`` after document ready
- *
- *    $element: One or more DOM elements of <a> containing
- *    links to big images each containing a thumbnail image itself
- */
+* a simple lightbox, with keyboard, mouse and touch interaction
+*
+* usage:
+*    call ``vanillabox($element)`` after document ready
+*
+*    $element: One or more DOM elements of <a> containing
+*    links to big images each containing a thumbnail image itself
+*/
 (function() {
   "use strict";
 
@@ -254,7 +254,7 @@
           break;
       }
     }
-  }
+ }
 
   function toggle($out, $cur) {
     if ($out) {
@@ -273,7 +273,7 @@
 
   function prev() {
     state.current =
-      state.current > 0 ? state.current - 1 : state.srcs.length - 1;
+     state.current > 0 ? state.current - 1 : state.srcs.length - 1;
     show();
   }
 
@@ -408,9 +408,6 @@
   }
 
   function vanillabox($containers, options) {
-    if ($containers.tagName === "A") {
-      $containers = $containers.parentElement;
-    }
     if (!($containers instanceof NodeList || $containers instanceof Array)) {
       $containers = [$containers];
     }
@@ -454,6 +451,11 @@
         prev: prev,
         close: close
       });
+
+      if ($container.tagName === "A") {
+        $container = $container.parentElement;
+      }
+
       [].forEach.call(
         $container.querySelectorAll(settings.linkSelector),
         function($link, j) {
@@ -470,7 +472,7 @@
           ) {
             srcs.push(src);
             titles.push(title);
-            infos.push($info);
+           infos.push($info);
 
             $link.addEventListener("click", function(e) {
               start(j);
@@ -482,7 +484,7 @@
     });
     return boxes.length === 1 ? boxes[0] : boxes;
   }
-  vanillabox.VERSION = 1.0;
+  vanillabox.VERSION = 1.1;
 
   window.vanillabox = vanillabox;
 })();

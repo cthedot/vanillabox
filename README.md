@@ -1,5 +1,21 @@
 # Vanillabox
-A VanillaJS Lightbox.
+A VanillaJS image lightbox.
+
+The HTML is based on links (or a single link) to large images. A group of links is grouped into a slideshow. Each item uses the link optional title attribute value as the title and an optional figcaption as additional description (info). You can overwrite how to get these values, default settings are:
+
+    {
+      linkSelector: "a",
+      getTitle: function($link) {
+        return $link.getAttribute("title");
+      },
+      useInfo: true,
+        getInfo: function($link) {
+          var $el = $link.querySelector("figcaption");
+          return $el ? $el.innerHTML : "";
+      },
+      openCallback: function() {},
+      closeCallback: function() {}
+    }
 
 Uses I18N features like
 
@@ -13,18 +29,25 @@ Tested in Firefox, Chrome, Edge 16, IE11.
 Demo http://cthedot.de/vanillabox/
 
 ## Usage
+    HTML
+    <a href="link-to-large-image.jpg" class="box" title="optional title">
+      <figure>
+        <img src="thumbnail.jpg" alt="1">
+        <figcaption>optional description</figcaption>
+      </figure>
+    </a>
 
+    JS
     document.addEventListener("DOMContentLoaded", function() {
-
-      // initialize single box
+      // initialize single link or container
       var box = vanillabox(
-        document.getElementById('singleitem')
+        document.getElementById('box')
       )
-
-      // or multiple at once
-
+      // or multiple containers/links at once
       var boxes = vanillabox(
-        document.querySelectorAll('.box')
+        document.querySelectorAll('.box'), {
+          // optional options
+        }
       )
     })
 
@@ -33,7 +56,6 @@ Demo http://cthedot.de/vanillabox/
     var box = vanillabox(
       document.getElementById('singleitem')
     )
-
     box.open()
     box.prev()
     box.next()
