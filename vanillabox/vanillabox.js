@@ -127,10 +127,6 @@
   var settings;
   var prefix = "vanillabox";
   var alternate = true;
-  var maxSize = {
-    width: 0,
-    height: 0
-  };
   var state = {
     srcs: [],
     titles: [],
@@ -149,10 +145,6 @@
   var $info;
   var $items = [];
   var $focusBefore;
-
-  function recalculate() {
-    maxSize.height = window.innerHeight;
-  }
 
   function setup() {
     // once only
@@ -194,8 +186,8 @@
         $items.push($item);
       }
     );
-    [].forEach.call($vanillabox.querySelectorAll("img"), function($item) {
-      $item.addEventListener(
+    [].forEach.call($vanillabox.querySelectorAll("img"), function($img) {
+      $img.addEventListener(
         "click",
         function(e) {
           e.stopPropagation();
@@ -207,21 +199,13 @@
 
     $body.appendChild($vanillabox);
 
-    // EVENTS resize and touch
-    window.addEventListener("resize", function(e) {
-      requestAnimationFrame(recalculate);
-    });
-    recalculate();
-
     initSwipe($vanillabox, function(direction) {
       if (direction === "left") {
         prev();
-      }
-      else if (direction === "right") {
+      } else if (direction === "right") {
         next();
-      }
-      else {
-        close()
+      } else {
+        close();
       }
     });
 
@@ -244,17 +228,16 @@
         case 27: // ESC
           close();
           break;
-        case 13: // enter
         case 32: // spacebar
-        case 39: // cl
+        case 39: // CL
           next();
           break;
-        case 37: // cr
+        case 37: // CR
           prev();
           break;
       }
     }
- }
+  }
 
   function toggle($out, $cur) {
     if ($out) {
@@ -265,22 +248,11 @@
       $cur.classList.add(prefix + "-direct");
       $cur.classList.remove(prefix + "-out");
       $cur.classList.remove(prefix + "-current");
-      getComputedStyle($cur).opacity; // DO IT!
+      // do it now:
+      getComputedStyle($cur).opacity;
       $cur.classList.remove(prefix + "-direct");
       $cur.classList.add(prefix + "-current");
     }
-  }
-
-  function prev() {
-    state.current =
-     state.current > 0 ? state.current - 1 : state.srcs.length - 1;
-    show();
-  }
-
-  function next() {
-    state.current =
-      state.current >= state.srcs.length - 1 ? 0 : state.current + 1;
-    show();
   }
 
   function show(initial) {
@@ -290,19 +262,21 @@
       return;
     }
     var $out = $items[alternate ? 1 : 0];
-    alternate = !alternate;
-    var $cur = $items[alternate ? 1 : 0];
-
+    var $cur = $items[alternate ? 0 : 1];
+    var $img = $cur.querySelector("img");
     var title = state.titles[state.current];
     var info = state.infos[state.current];
     var src = state.srcs[state.current];
-    var $img = $cur.querySelector("img");
     var setSrc = function(curOnly) {
-      $img.style.maxHeight = maxSize.height;
       $img.src = src;
-      $vanillabox.classList.toggle(prefix + "-alternate");
       toggle(curOnly ? false : $out, $cur);
+      $vanillabox.classList.remove(prefix + "-loading");
     };
+
+    alternate = !alternate;
+    $vanillabox.classList.add(prefix + "-loading");
+    $img.src = "";
+
     if (state.cached.indexOf(src) == -1) {
       var tmp = new Image();
 
@@ -337,6 +311,18 @@
     } else {
       $info.classList.remove(prefix + "-info-visible");
     }
+  }
+
+  function prev() {
+    state.current =
+      state.current > 0 ? state.current - 1 : state.srcs.length - 1;
+    show();
+  }
+
+  function next() {
+    state.current =
+      state.current >= state.srcs.length - 1 ? 0 : state.current + 1;
+    show();
   }
 
   function close() {
@@ -380,7 +366,8 @@
     } else {
       $next.removeAttribute("disabled");
       $prev.removeAttribute("disabled");
-      $next.focus();
+      // focus on item to prevent focus on button on touch devices
+      $items[alternate ? 1 : 0].querySelector('img').focus()
     }
 
     if (!state.isOpen) {
@@ -472,7 +459,7 @@
           ) {
             srcs.push(src);
             titles.push(title);
-           infos.push($info);
+            infos.push($info);
 
             $link.addEventListener("click", function(e) {
               start(j);
@@ -484,7 +471,7 @@
     });
     return boxes.length === 1 ? boxes[0] : boxes;
   }
-  vanillabox.VERSION = 1.1;
+  vanillabox.VERSION = 1.2;
 
   window.vanillabox = vanillabox;
 })();

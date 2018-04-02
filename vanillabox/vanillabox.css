@@ -1,4 +1,6 @@
+/* vanillabox 1.2 */
 .vanillabox {
+  touch-action: none;
   box-sizing: border-box;
   z-index: 1001;
   position: fixed;
@@ -21,6 +23,30 @@
   box-sizing: inherit;
 }
 
+@keyframes vanillabox-loader {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+.vanillabox-loading::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -1em auto auto -1em;
+  width: 2em;
+  height: 2em;
+  border-radius: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  animation: vanillabox-loader 1s linear infinite alternate;
+}
+
 .vanillabox-button {
   cursor: pointer;
   color: #fff;
@@ -37,13 +63,14 @@
   height: 1.5em;
   padding-bottom: 0.15em;
   overflow: hidden;
-  transition: 0.2s;
+  transition: 0.25s 0.05s;
 }
 .vanillabox:hover .vanillabox-button {
   opacity: 0.6;
 }
 .vanillabox-button.vanillabox-button:hover,
 .vanillabox-button.vanillabox-button:focus {
+  outline: none;
   color: #fff;
   background-color: rgba(0, 0, 0, 0.2);
   opacity: 1;
@@ -126,31 +153,37 @@
   top: 0;
   height: 100%;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
   transition: z-index 0s, opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
   z-index: 20;
   opacity: 0;
   transform: scale(0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
-.vanillabox .vanillabox-current {
+.vanillabox-current {
   z-index: 30;
   opacity: 1;
   transform: scale(1);
 }
-.vanillabox .vanillabox-out {
+.vanillabox-out {
   z-index: 10;
   opacity: 0;
   transform: scale(1);
 }
-.vanillabox .vanillabox-direct {
+.vanillabox-direct {
   transition: none;
 }
 
 .vanillabox img {
+  position: relative;
   display: block;
-  max-width: 100%;
-  max-height: 100%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+@supports not (old: ie) {
+  .vanillabox img {
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
