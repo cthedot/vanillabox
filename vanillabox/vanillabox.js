@@ -185,7 +185,7 @@
               if (e.target === $item) {
                 close(e);
               }
-            } else if (state.srcs.length === 1) {
+            } else if (e.target === $item || state.srcs.length === 1) {
               close(e);
             } else {
               next();
