@@ -19,33 +19,76 @@
       margin: 0;
     }
 
+    main a {
+      display: block;
+      margin: 1em;
+    }
+
     ul {
       list-style: none;
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       padding: 0;
-    }
-
-    main a {
-      display: block;
-      margin: 1em;
     }
 
     ul a:focus {
       border: 2px dotted;
     }
 
+    /* example style */
+
+    main {
+      transition: .1s .2s;
+    }
+
+    main[aria-hidden] {
+      transition-delay: 0;
+      filter: blur(2px) saturate(0);
+      transform: scale(0.95);
+    }
+
     main img {
       width: 30vw;
     }
+
+    .scrollingcontent {
+      height: 150vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
   </style>
+
+
 </head>
 
 <body>
-  <h1>vanillabox &ndash; VanillaJS image lightbox <b></b></h1>
 
   <main>
-    <h2>Default</h2>
+    <h1>vanillabox &ndash; VanillaJS image lightbox
+      <b>VERSION</b>
+    </h1>
+
+    <h2>Single item</h2>
+    <ul class="box">
+      <li>
+        <a href="image/0.jpg" title="title">
+          <figure>
+            <img src="image/0t.jpg" alt="1">
+            <figcaption>Description (info)</figcaption>
+          </figure>
+        </a>
+      </li>
+    </ul>
+
+    <h2>Content from #anchor</h2>
+    <div>
+      <a href="#anchor" title="anchorlink title" class="box">Lightbox with content</a>
+    </div>
+
+    <h2>Grouped (mixed) content</h2>
     <ul class="box">
       <li>
         <a href="image/0.jpg" title="Slide 1">
@@ -55,6 +98,7 @@
           </figure>
         </a>
       </li>
+
       <li>
         <a href="image/1.jpg" title="Slide 2">
           <figure>
@@ -78,22 +122,15 @@
           </figure>
         </a>
       </li>
-    </ul>
-
-    <h2>Single item</h2>
-
-    <ul class="box">
       <li>
-        <a href="image/0.jpg" title="title">
-          <figure>
-            <img src="image/0t.jpg" alt="1">
-            <figcaption>Description (info)</figcaption>
-          </figure>
-        </a>
+        <a href="#anchor" title="anchorlink title">Content1</a>
+      </li>
+      <li>
+        <a href="#anchor2" title="anchorlink title">Content2</a>
       </li>
     </ul>
 
-    <h2>link with box</h2>
+    <h2>link with class .box directly</h2>
     <div>
       <a href="image/0.jpg" title="title" class="box">
         <figure>
@@ -103,7 +140,27 @@
       </a>
     </div>
 
+    <div hidden id="anchor">
+      <div class="boxcontent">
+        <h3>Content of anchorlink</h3>
+        <p>Some content with
+          <a href="http://github.com">link</a> too</p>
+      </div>
+    </div>
+
+    <div hidden id="anchor2">
+      <div class="scrollingcontent">
+        <h3>Content2 of anchorlink</h3>
+        <p>Some other content</p>
+        <p>Some other content</p>
+      </div>
+    </div>
+
+
+
   </main>
+
+
 
   <script src="vanillabox/vanillabox.js"></script>
   <script>

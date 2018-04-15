@@ -1,4 +1,4 @@
-/* vanillabox 1.2 */
+/* vanillabox 2.2 */
 .vanillabox {
   touch-action: none;
   box-sizing: border-box;
@@ -176,10 +176,31 @@
   transition: none;
 }
 
-.vanillabox img {
+.vanillabox-html {
+  background: rgb(255, 255, 255);
+  padding: 0 1em;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.vanillabox-item img,
+.vanillabox-html,
+.vanillabox-html video {
   position: relative;
   display: block;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+.vanillabox-html video {
+  width: auto;
+  height: 75vh;
+}
+
+@media (orientation: portrait) {
+  .vanillabox-item video {
+    width: 90vw;
+    height: auto;
+  }
 }
 @supports not (old: ie) {
   .vanillabox img {

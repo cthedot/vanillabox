@@ -2,7 +2,7 @@
 * a simple lightbox, with keyboard, mouse and touch interaction
 *
 * usage:
-*    call ``vanillabox($element)`` after document ready
+*    call ``vanillabox($element, settings)`` after document ready
 *
 *    $element: One or more DOM elements of <a> containing
 *    links to big images each containing a thumbnail image itself
@@ -10,7 +10,7 @@
 (function() {
   "use strict";
 
-  // Polyfill for e.g. IE
+  // Polyfills for e.g. IE
   if (typeof Object.assign != "function") {
     // Must be writable: true, enumerable: false, configurable: true
     Object.defineProperty(Object, "assign", {
@@ -44,6 +44,16 @@
     });
   }
 
+  if (window.NodeList && !NodeList.prototype.forEach) {
+    NodeList.prototype.forEach = function(callback, thisArg) {
+      thisArg = thisArg || window;
+      for (var i = 0; i < this.length; i++) {
+        callback.call(thisArg, this[i], i, this);
+      }
+    };
+  }
+
+  // touch events
   function initSwipe($e, handler) {
     var POINTER_EVENTS = window.PointerEvent ? true : false;
     var start = {};
@@ -133,29 +143,27 @@
     infos: [],
     cached: [],
     isOpen: false,
-    current: 0
+    current: 0,
+    isHTML: false
   };
-  var $body;
-  var $closer;
-  var $prev;
-  var $next;
   var $vanillabox;
   var $title;
   var $status;
   var $info;
+  var $closer;
+  var $prev;
+  var $next;
   var $items = [];
   var $focusBefore;
 
   function setup() {
     // once only
-    $body = document.getElementsByTagName("body")[0];
-
     $vanillabox = document.createElement("div");
     $vanillabox.setAttribute("aria-hidden", "true");
     $vanillabox.classList.add(prefix);
     $vanillabox.innerHTML = [
-      '<div class="prefix-item"><img alt=""></div>',
-      '<div class="prefix-item"><img alt=""></div>',
+      '<div class="prefix-item"></div>',
+      '<div class="prefix-item"></div>',
       '<button class="prefix-closer prefix-button" type="button">&times;</button>',
       '<span class="prefix-title"></span>',
       '<article class="prefix-info"></article>',
@@ -165,6 +173,27 @@
     ]
       .join("")
       .replace(/prefix\-/g, prefix + "-");
+
+    $vanillabox
+      .querySelectorAll("." + prefix + "-item")
+      .forEach(function($item) {
+        $items.push($item);
+        $item.addEventListener(
+          "click",
+          function(e) {
+            if (state.isHTML) {
+              if (e.target === $item) {
+                close(e);
+              }
+            } else if (state.srcs.length === 1) {
+              close(e);
+            } else {
+              next();
+            }
+          },
+          false
+        );
+      });
 
     $title = $vanillabox.querySelector("." + prefix + "-title");
     $status = $vanillabox.querySelector("." + prefix + "-status");
@@ -179,32 +208,14 @@
     $next = $vanillabox.querySelector("." + prefix + "-next");
     $next.addEventListener("click", next, false);
 
-    [].forEach.call(
-      $vanillabox.querySelectorAll("." + prefix + "-item"),
-      function($item) {
-        $item.addEventListener("click", close, false);
-        $items.push($item);
-      }
-    );
-    [].forEach.call($vanillabox.querySelectorAll("img"), function($img) {
-      $img.addEventListener(
-        "click",
-        function(e) {
-          e.stopPropagation();
-          next();
-        },
-        false
-      );
-    });
-
-    $body.appendChild($vanillabox);
+    document.querySelector("body").appendChild($vanillabox);
 
     initSwipe($vanillabox, function(direction) {
       if (direction === "left") {
         prev();
       } else if (direction === "right") {
         next();
-      } else {
+      } else if (!state.isHTML) {
         close();
       }
     });
@@ -229,6 +240,8 @@
           close();
           break;
         case 32: // spacebar
+          if (!state.isHTML) next();
+          break;
         case 39: // CL
           next();
           break;
@@ -256,53 +269,72 @@
   }
 
   function show(initial) {
-    if (!initial && state.srcs.length == 1) {
-      // if 1 only simple close after open
+    if (!initial && state.srcs.length === 1) {
+      // if 1 only just close after open
       close();
       return;
     }
-    var $out = $items[alternate ? 1 : 0];
-    var $cur = $items[alternate ? 0 : 1];
-    var $img = $cur.querySelector("img");
+
+    var src = state.srcs[state.current];
+    var isHTML = (state.isHTML = src.indexOf("#") === 0);
     var title = state.titles[state.current];
     var info = state.infos[state.current];
-    var src = state.srcs[state.current];
-    var setSrc = function(curOnly) {
-      $img.src = src;
-      toggle(curOnly ? false : $out, $cur);
+
+    var $out = $items[alternate ? 1 : 0];
+    var $cur = $items[alternate ? 0 : 1];
+
+    var setSrc = function() {
+      $cur.innerHTML = '<img alt="" src="' + src + '">';
+      finish();
+    };
+    var finish = function() {
+      toggle(false, $cur);
+
+      var focussables = $vanillabox.querySelectorAll(FOCUSSABLES);
+
+      firstFocussable = focussables[0];
+      lastFocussable = focussables[focussables.length - 1];
+
       $vanillabox.classList.remove(prefix + "-loading");
+      settings.itemCallback($cur);
     };
 
     alternate = !alternate;
     $vanillabox.classList.add(prefix + "-loading");
-    $img.src = "";
 
-    if (state.cached.indexOf(src) == -1) {
-      var tmp = new Image();
+    toggle($out, false);
 
-      tmp.addEventListener(
-        "load",
-        function() {
-          state.cached.push(src);
-          setSrc(true);
-          tmp = null;
-        },
-        false
-      );
-      tmp.addEventListener(
-        "error",
-        function(e) {
-          setSrc(true);
-          tmp = null;
-        },
-        false
-      );
-      tmp.src = src;
-      toggle($out, false);
+    if (isHTML) {
+      $cur.innerHTML = '<div class="' + prefix + '-html">' + document.getElementById(src.substr(1)).innerHTML + '</div>';
+      finish();
     } else {
-      setSrc();
-    }
+      $cur.innerHTML = "";
 
+      if (state.cached.indexOf(src) > -1) {
+        setSrc();
+      } else {
+        var tmp = new Image();
+
+        tmp.addEventListener(
+          "load",
+          function() {
+            state.cached.push(src);
+            setSrc();
+            tmp = null;
+          },
+          false
+        );
+        tmp.addEventListener(
+          "error",
+          function(e) {
+            setSrc();
+            tmp = null;
+          },
+          false
+        );
+        tmp.src = src;
+      }
+    }
     $title.innerHTML = title;
     $status.innerHTML = [state.current + 1, state.srcs.length].join(" / ");
     if (info) {
@@ -328,10 +360,10 @@
   function close() {
     document.removeEventListener("keydown", keyHandler);
 
-    // close by settings aria hidden
-    [].forEach.call(
-      document.querySelectorAll("body>*:not(.vanillabox)"),
-      function($el, i) {
+    // close by setting aria hidden
+    document
+      .querySelectorAll("body>*:not(.vanillabox)")
+      .forEach(function($el, i) {
         var original = $el.getAttribute("data-vanillabox");
 
         if (original) {
@@ -340,8 +372,7 @@
         } else {
           $el.removeAttribute("aria-hidden");
         }
-      }
-    );
+      });
     $vanillabox.setAttribute("aria-hidden", "true");
     $focusBefore && $focusBefore.focus();
     state.isOpen = false;
@@ -350,10 +381,7 @@
 
   function open() {
     var singleitem = state.srcs.length === 1;
-    var focussables = $vanillabox.querySelectorAll(FOCUSSABLES);
 
-    firstFocussable = focussables[0];
-    lastFocussable = focussables[focussables.length - 1];
     $focusBefore = document.activeElement;
     $vanillabox.classList[singleitem ? "add" : "remove"](
       prefix + "-singleitem"
@@ -367,26 +395,26 @@
       $next.removeAttribute("disabled");
       $prev.removeAttribute("disabled");
       // focus on item to prevent focus on button on touch devices
-      $items[alternate ? 1 : 0].querySelector('img').focus()
+      var $focus = $items[alternate ? 1 : 0].querySelector("*");
+      $focus && $focus.focus();
     }
 
     if (!state.isOpen) {
-      $items[0].querySelector("img").src = "";
-      $items[1].querySelector("img").src = "";
-
+      $items.forEach(function($item) {
+        $item.innerHTML = "";
+      })
       $vanillabox.removeAttribute("aria-hidden");
 
-      [].forEach.call(
-        document.querySelectorAll("body>*:not(.vanillabox)"),
-        function($el, i) {
+      document
+        .querySelectorAll("body>*:not(.vanillabox)")
+        .forEach(function($el, i) {
           var original = $el.getAttribute("aria-hidden");
 
           if (original) {
             $el.setAttribute("data-vanillabox", original);
           }
           $el.setAttribute("aria-hidden", "true");
-        }
-      );
+        });
 
       document.addEventListener("keydown", keyHandler, false);
       state.isOpen = true;
@@ -410,6 +438,7 @@
           return $el ? $el.innerHTML : "";
         },
         openCallback: function() {},
+        itemCallback: function($item) {},
         closeCallback: function() {}
       },
       options
@@ -420,7 +449,7 @@
     // once only
     setup && setup();
 
-    [].forEach.call($containers, function($container, i) {
+    $containers.forEach(function($container, i) {
       var srcs = [];
       var titles = [];
       var infos = [];
@@ -443,35 +472,37 @@
         $container = $container.parentElement;
       }
 
-      [].forEach.call(
-        $container.querySelectorAll(settings.linkSelector),
-        function($link, j) {
+      $container
+        .querySelectorAll(settings.linkSelector)
+        .forEach(function($link, j) {
           var src = $link.href;
           var srclower = src.toLowerCase();
+          var srcAnchor = $link.getAttribute("href").indexOf("#") === 0;
           var title = settings.getTitle($link);
           var $info = settings.useInfo ? settings.getInfo($link) : "";
 
           if (
+            srcAnchor ||
             srclower.indexOf(".gif") != -1 ||
             srclower.indexOf(".jpg") != -1 ||
             srclower.indexOf(".png") != -1 ||
             srclower.indexOf(".svg") != -1
           ) {
-            srcs.push(src);
+            srcs.push(srcAnchor ? $link.getAttribute("href") : src);
             titles.push(title);
             infos.push($info);
 
+            // only images
             $link.addEventListener("click", function(e) {
               start(j);
               e.preventDefault();
             });
           }
-        }
-      );
+        });
     });
     return boxes.length === 1 ? boxes[0] : boxes;
   }
-  vanillabox.VERSION = 1.2;
+  vanillabox.VERSION = 2.2;
 
   window.vanillabox = vanillabox;
 })();
