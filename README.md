@@ -64,12 +64,14 @@ Optional settings to overwrite, the default settings are:
     return $link.getAttribute("title");
   },
   useInfo: true,
-    getInfo: function($link) {
-      var $el = $link.querySelector("figcaption");
-      return $el ? $el.innerHTML : "";
+  getInfo: function($link) {
+    var $el = $link.querySelector("figcaption");
+    return $el ? $el.innerHTML : "";
   },
+  // if false do nothing on item click, nav only
   openCallback: function() {},
-  itemCallback: function($item) {
+  nextOnClick: true,
+  itemCallback: function($item, title, info) {
     // init something in item like start a video etc
   },
   closeCallback: function() {}

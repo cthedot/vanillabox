@@ -452,9 +452,9 @@
           var $el = $link.querySelector("figcaption");
           return $el ? $el.innerHTML : "";
         },
-        nextOnClick: true,
         openCallback: function() {},
-        itemCallback: function($item) {},
+        nextOnClick: true,
+        itemCallback: function($item, title, info) {},
         closeCallback: function() {}
       },
       options
