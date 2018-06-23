@@ -51,6 +51,8 @@ box.open()
 box.prev()
 box.next()
 box.close()
+// remove event handlers if e.g. new init on same element
+box.clean()
 ```
 
 
