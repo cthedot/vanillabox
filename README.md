@@ -70,8 +70,8 @@ Optional settings to overwrite, the default settings are:
     var $el = $link.querySelector("figcaption");
     return $el ? $el.innerHTML : "";
   },
-  // if false do nothing on item click, nav only
   openCallback: function() {},
+  // if false do nothing on item click, nav only
   nextOnClick: true,
   itemCallback: function($item, title, info) {
     // init something in item like start a video etc
