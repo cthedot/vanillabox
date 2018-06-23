@@ -455,8 +455,7 @@
         nextOnClick: true,
         openCallback: function() {},
         itemCallback: function($item) {},
-        closeCallback: function() {},
-        closeOnSame: false
+        closeCallback: function() {}
       },
       options
     );
@@ -473,7 +472,7 @@
       var start = function(j) {
         var alreadyOpen = open();
 
-        if (settings.closeOnSame && alreadyOpen && state.current === j) {
+        if (alreadyOpen && state.current === j) {
           close();
           return;
         }
@@ -532,7 +531,7 @@
     });
     return boxes.length === 1 ? boxes[0] : boxes;
   }
-  vanillabox.VERSION = 3.0;
+  vanillabox.VERSION = 3.1;
 
   window.vanillabox = vanillabox;
 })();
