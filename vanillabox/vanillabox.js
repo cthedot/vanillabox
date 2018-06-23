@@ -181,6 +181,9 @@
         $item.addEventListener(
           "click",
           function(e) {
+            if (!settings.nextOnClick) {
+              return;
+            }
             if (state.isHTML) {
               if (e.target === $item) {
                 close(e);
@@ -274,15 +277,12 @@
       close();
       return;
     }
-
     var src = state.srcs[state.current];
     var isHTML = (state.isHTML = src.indexOf("#") === 0);
     var title = state.titles[state.current];
     var info = state.infos[state.current];
-
     var $out = $items[alternate ? 1 : 0];
     var $cur = $items[alternate ? 0 : 1];
-
     var setSrc = function() {
       $cur.innerHTML = '<img alt="" src="' + src + '">';
       finish();
@@ -296,7 +296,7 @@
       lastFocussable = focussables[focussables.length - 1];
 
       $vanillabox.classList.remove(prefix + "-loading");
-      settings.itemCallback($cur);
+      settings.itemCallback($cur, title, info);
     };
 
     alternate = !alternate;
@@ -305,7 +305,12 @@
     toggle($out, false);
 
     if (isHTML) {
-      $cur.innerHTML = '<div class="' + prefix + '-html">' + document.getElementById(src.substr(1)).innerHTML + '</div>';
+      $cur.innerHTML =
+        '<div class="' +
+        prefix +
+        '-html">' +
+        document.getElementById(src.substr(1)).innerHTML +
+        "</div>";
       finish();
     } else {
       $cur.innerHTML = "";
@@ -402,7 +407,7 @@
     if (!state.isOpen) {
       $items.forEach(function($item) {
         $item.innerHTML = "";
-      })
+      });
       $vanillabox.removeAttribute("aria-hidden");
 
       document
@@ -419,7 +424,17 @@
       document.addEventListener("keydown", keyHandler, false);
       state.isOpen = true;
       settings.openCallback();
+    } else {
+      return true;
     }
+  }
+
+  function clean() {
+    this._events.forEach(
+      function(event, i) {
+        event.$el.removeEventListener("click", event.handler);
+      }.bind(this)
+    );
   }
 
   function vanillabox($containers, options) {
@@ -437,9 +452,11 @@
           var $el = $link.querySelector("figcaption");
           return $el ? $el.innerHTML : "";
         },
+        nextOnClick: true,
         openCallback: function() {},
         itemCallback: function($item) {},
-        closeCallback: function() {}
+        closeCallback: function() {},
+        closeOnSame: false
       },
       options
     );
@@ -454,19 +471,27 @@
       var titles = [];
       var infos = [];
       var start = function(j) {
+        var alreadyOpen = open();
+
+        if (settings.closeOnSame && alreadyOpen && state.current === j) {
+          close();
+          return;
+        }
         state.srcs = srcs;
         state.titles = titles;
         state.infos = infos;
         state.current = j || 0;
-        open();
         show(true);
       };
-      boxes.push({
+      var box = {
+        _events: [],
         open: start,
         next: next,
         prev: prev,
-        close: close
-      });
+        close: close,
+        clean: clean
+      };
+      boxes.push(box);
 
       if ($container.tagName === "A") {
         $container = $container.parentElement;
@@ -480,9 +505,9 @@
           var srcAnchor = $link.getAttribute("href").indexOf("#") === 0;
           var title = settings.getTitle($link);
           var $info = settings.useInfo ? settings.getInfo($link) : "";
+          var handler;
 
           if (
-            srcAnchor ||
             srclower.indexOf(".gif") != -1 ||
             srclower.indexOf(".jpg") != -1 ||
             srclower.indexOf(".png") != -1 ||
@@ -493,16 +518,21 @@
             infos.push($info);
 
             // only images
-            $link.addEventListener("click", function(e) {
+            handler = function(e) {
               start(j);
               e.preventDefault();
+            };
+            $link.addEventListener("click", handler, false);
+            box._events.push({
+              $el: $link,
+              handler: handler
             });
           }
         });
     });
     return boxes.length === 1 ? boxes[0] : boxes;
   }
-  vanillabox.VERSION = 2.2;
+  vanillabox.VERSION = 3.0;
 
   window.vanillabox = vanillabox;
 })();
