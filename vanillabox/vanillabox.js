@@ -498,7 +498,7 @@
 
       $container
         .querySelectorAll(settings.linkSelector)
-        .forEach(function($link, j) {
+        .forEach(function ($link, j) {
           var src = $link.href;
           var srclower = src.toLowerCase();
           var srcAnchor = $link.getAttribute("href").indexOf("#") === 0;
@@ -510,7 +510,8 @@
             srclower.indexOf(".gif") != -1 ||
             srclower.indexOf(".jpg") != -1 ||
             srclower.indexOf(".png") != -1 ||
-            srclower.indexOf(".svg") != -1
+            srclower.indexOf(".svg") != -1 ||
+            srcAnchor
           ) {
             srcs.push(srcAnchor ? $link.getAttribute("href") : src);
             titles.push(title);
@@ -531,7 +532,7 @@
     });
     return boxes.length === 1 ? boxes[0] : boxes;
   }
-  vanillabox.VERSION = 3.1;
+  vanillabox.VERSION = 3.2;
 
   window.vanillabox = vanillabox;
 })();

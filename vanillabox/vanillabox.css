@@ -1,4 +1,4 @@
-/* vanillabox 2.2 */
+/* vanillabox 3.2 */
 .vanillabox {
   touch-action: none;
   box-sizing: border-box;
@@ -194,6 +194,23 @@
 .vanillabox-html video {
   width: auto;
   height: 75vh;
+}
+
+.vanillabox-html .vbox-iframe {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  min-width: 80vw;
+  max-width: 100%;
+}
+
+.vanillabox-html .vbox-iframe iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 @media (orientation: portrait) {

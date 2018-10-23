@@ -87,7 +87,7 @@ Uses I18N features like
 
 Use mouse, keyboard or touch to navigate.
 
-Tested in Firefox, Chrome, Edge 16, IE11, Safari.
+Tested in Firefox, Chrome, Edge, IE11, Safari.
 IE has limited support for larger than window images for which the slide has to be scrolled which seems a reasonable fallback. If image fits in viewport IE works fully anyway.
 
 ## Demo
