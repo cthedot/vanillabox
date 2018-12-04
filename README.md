@@ -62,6 +62,14 @@ Optional settings to overwrite, the default settings are:
 ```javascript
 {
   linkSelector: "a",
+  checkImage: function($link) {
+    var src = $link.href.toLowerCase();
+
+    return src.indexOf(".gif") != -1 ||
+      src.indexOf(".jpg") != -1 ||
+      src.indexOf(".png") != -1 ||
+      src.indexOf(".svg") != -1
+  },
   getTitle: function($link) {
     return $link.getAttribute("title");
   },
@@ -71,11 +79,9 @@ Optional settings to overwrite, the default settings are:
     return $el ? $el.innerHTML : "";
   },
   openCallback: function() {},
-  // if false do nothing on item click, nav only
   nextOnClick: true,
-  itemCallback: function($item, title, info) {
-    // init something in item like start a video etc
-  },
+  useSwipe: true,
+  itemCallback: function($item, title, info) {},
   closeCallback: function() {}
 }
 ```

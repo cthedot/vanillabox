@@ -1,12 +1,12 @@
 /*
-* a simple lightbox, with keyboard, mouse and touch interaction
-*
-* usage:
-*    call ``vanillabox($element, settings)`` after document ready
-*
-*    $element: One or more DOM elements of <a> containing
-*    links to big images each containing a thumbnail image itself
-*/
+ * a simple lightbox, with keyboard, mouse and touch interaction
+ *
+ * usage:
+ *    call ``vanillabox($element, settings)`` after document ready
+ *
+ *    $element: One or more DOM elements of <a> containing
+ *    links to big images each containing a thumbnail image itself
+ */
 (function() {
   "use strict";
 
@@ -92,17 +92,20 @@
             Math.abs(deltaY) < thresholdDistance
           ) {
             handler("left");
-          } else if (
+          }
+          else if (
             -deltaX > thresholdDistance &&
             Math.abs(deltaY) < thresholdDistance
           ) {
             handler("right");
-          } else if (
+          }
+          else if (
             deltaY > thresholdDistance &&
             Math.abs(deltaX) < thresholdDistance
           ) {
             handler("up");
-          } else if (
+          }
+          else if (
             -deltaY > thresholdDistance &&
             Math.abs(deltaX) < thresholdDistance
           ) {
@@ -117,7 +120,8 @@
       $e.addEventListener("pointerup", endEvent, false);
       $e.addEventListener("pointerleave", endEvent, false);
       $e.addEventListener("pointercancel", endEvent, false);
-    } else if (window.TouchEvent) {
+    }
+    else if (window.TouchEvent) {
       $e.addEventListener("touchstart", startHandler, false);
       $e.addEventListener("touchmove", moveHandler, false);
       $e.addEventListener("touchend", endEvent, false);
@@ -162,15 +166,15 @@
     $vanillabox.setAttribute("aria-hidden", "true");
     $vanillabox.classList.add(prefix);
     $vanillabox.innerHTML = [
-      '<div class="prefix-item"></div>',
-      '<div class="prefix-item"></div>',
-      '<button class="prefix-closer prefix-button" type="button">&times;</button>',
-      '<span class="prefix-title"></span>',
-      '<article class="prefix-info"></article>',
-      '<span class="prefix-status"></span>',
-      '<button class="prefix-prev prefix-button" type="button"></button>',
-      '<button class="prefix-next prefix-button" type="button"></button>'
-    ]
+        '<div class="prefix-item"></div>',
+        '<div class="prefix-item"></div>',
+        '<button class="prefix-closer prefix-button" type="button">&times;</button>',
+        '<span class="prefix-title"></span>',
+        '<article class="prefix-info"></article>',
+        '<span class="prefix-status"></span>',
+        '<button class="prefix-prev prefix-button" type="button"></button>',
+        '<button class="prefix-next prefix-button" type="button"></button>'
+      ]
       .join("")
       .replace(/prefix\-/g, prefix + "-");
 
@@ -188,9 +192,11 @@
               if (e.target === $item) {
                 close(e);
               }
-            } else if (e.target === $item || state.srcs.length === 1) {
+            }
+            else if (e.target === $item || state.srcs.length === 1) {
               close(e);
-            } else {
+            }
+            else {
               next();
             }
           },
@@ -213,15 +219,19 @@
 
     document.querySelector("body").appendChild($vanillabox);
 
-    initSwipe($vanillabox, function(direction) {
-      if (direction === "left") {
-        prev();
-      } else if (direction === "right") {
-        next();
-      } else if (!state.isHTML) {
-        close();
-      }
-    });
+    if (settings.useSwipe) {
+      initSwipe($vanillabox, function(direction) {
+        if (direction === "left") {
+          prev();
+        }
+        else if (direction === "right") {
+          next();
+        }
+        else if (!state.isHTML) {
+          close();
+        }
+      });
+    }
 
     // once only
     setup = false;
@@ -234,7 +244,8 @@
           if (e.target === lastFocussable && !e.shiftKey) {
             e.preventDefault();
             firstFocussable.focus();
-          } else if (e.target === firstFocussable && e.shiftKey) {
+          }
+          else if (e.target === firstFocussable && e.shiftKey) {
             e.preventDefault();
             lastFocussable.focus();
           }
@@ -246,10 +257,10 @@
           if (!state.isHTML) next();
           break;
         case 39: // CL
-          next();
+          if (!state.isHTML) next();
           break;
         case 37: // CR
-          prev();
+          if (!state.isHTML) prev();
           break;
       }
     }
@@ -312,12 +323,14 @@
         document.getElementById(src.substr(1)).innerHTML +
         "</div>";
       finish();
-    } else {
+    }
+    else {
       $cur.innerHTML = "";
 
       if (state.cached.indexOf(src) > -1) {
         setSrc();
-      } else {
+      }
+      else {
         var tmp = new Image();
 
         tmp.addEventListener(
@@ -341,11 +354,13 @@
       }
     }
     $title.innerHTML = title;
+    $status.hidden = state.srcs.length === 1
     $status.innerHTML = [state.current + 1, state.srcs.length].join(" / ");
     if (info) {
       $info.innerHTML = info;
       $info.classList.add(prefix + "-info-visible");
-    } else {
+    }
+    else {
       $info.classList.remove(prefix + "-info-visible");
     }
   }
@@ -374,7 +389,8 @@
         if (original) {
           $el.setAttribute("aria-hidden", original);
           $el.removeAttribute("data-vanillabox");
-        } else {
+        }
+        else {
           $el.removeAttribute("aria-hidden");
         }
       });
@@ -396,7 +412,8 @@
       $closer.focus();
       $next.setAttribute("disabled", true);
       $prev.setAttribute("disabled", true);
-    } else {
+    }
+    else {
       $next.removeAttribute("disabled");
       $prev.removeAttribute("disabled");
       // focus on item to prevent focus on button on touch devices
@@ -424,7 +441,8 @@
       document.addEventListener("keydown", keyHandler, false);
       state.isOpen = true;
       settings.openCallback();
-    } else {
+    }
+    else {
       return true;
     }
   }
@@ -441,9 +459,16 @@
     if (!($containers instanceof NodeList || $containers instanceof Array)) {
       $containers = [$containers];
     }
-    settings = Object.assign(
-      {
+    settings = Object.assign({
         linkSelector: "a",
+        checkImage: function($link) {
+          var src = $link.href.toLowerCase();
+
+          return src.indexOf(".gif") != -1 ||
+            src.indexOf(".jpg") != -1 ||
+            src.indexOf(".png") != -1 ||
+            src.indexOf(".svg") != -1
+        },
         getTitle: function($link) {
           return $link.getAttribute("title");
         },
@@ -454,6 +479,7 @@
         },
         openCallback: function() {},
         nextOnClick: true,
+        useSwipe: true,
         itemCallback: function($item, title, info) {},
         closeCallback: function() {}
       },
@@ -498,7 +524,7 @@
 
       $container
         .querySelectorAll(settings.linkSelector)
-        .forEach(function ($link, j) {
+        .forEach(function($link, j) {
           var src = $link.href;
           var srclower = src.toLowerCase();
           var srcAnchor = $link.getAttribute("href").indexOf("#") === 0;
@@ -507,11 +533,7 @@
           var handler;
 
           if (
-            srclower.indexOf(".gif") != -1 ||
-            srclower.indexOf(".jpg") != -1 ||
-            srclower.indexOf(".png") != -1 ||
-            srclower.indexOf(".svg") != -1 ||
-            srcAnchor
+            settings.checkImage($link, srclower) || srcAnchor
           ) {
             srcs.push(srcAnchor ? $link.getAttribute("href") : src);
             titles.push(title);
@@ -532,7 +554,7 @@
     });
     return boxes.length === 1 ? boxes[0] : boxes;
   }
-  vanillabox.VERSION = 3.2;
+  vanillabox.VERSION = 3.4;
 
   window.vanillabox = vanillabox;
 })();
