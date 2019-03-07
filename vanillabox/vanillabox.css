@@ -186,6 +186,10 @@
   overflow: auto;
 }
 
+.vanillabox-html > *[hidden] {
+  display: block !important;
+}
+
 .vanillabox-item img,
 .vanillabox-html,
 .vanillabox-html video {

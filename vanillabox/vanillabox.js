@@ -92,20 +92,17 @@
             Math.abs(deltaY) < thresholdDistance
           ) {
             handler("left");
-          }
-          else if (
+          } else if (
             -deltaX > thresholdDistance &&
             Math.abs(deltaY) < thresholdDistance
           ) {
             handler("right");
-          }
-          else if (
+          } else if (
             deltaY > thresholdDistance &&
             Math.abs(deltaX) < thresholdDistance
           ) {
             handler("up");
-          }
-          else if (
+          } else if (
             -deltaY > thresholdDistance &&
             Math.abs(deltaX) < thresholdDistance
           ) {
@@ -120,8 +117,7 @@
       $e.addEventListener("pointerup", endEvent, false);
       $e.addEventListener("pointerleave", endEvent, false);
       $e.addEventListener("pointercancel", endEvent, false);
-    }
-    else if (window.TouchEvent) {
+    } else if (window.TouchEvent) {
       $e.addEventListener("touchstart", startHandler, false);
       $e.addEventListener("touchmove", moveHandler, false);
       $e.addEventListener("touchend", endEvent, false);
@@ -166,15 +162,15 @@
     $vanillabox.setAttribute("aria-hidden", "true");
     $vanillabox.classList.add(prefix);
     $vanillabox.innerHTML = [
-        '<div class="prefix-item"></div>',
-        '<div class="prefix-item"></div>',
-        '<button class="prefix-closer prefix-button" type="button">&times;</button>',
-        '<span class="prefix-title"></span>',
-        '<article class="prefix-info"></article>',
-        '<span class="prefix-status"></span>',
-        '<button class="prefix-prev prefix-button" type="button"></button>',
-        '<button class="prefix-next prefix-button" type="button"></button>'
-      ]
+      '<div class="prefix-item"></div>',
+      '<div class="prefix-item"></div>',
+      '<button class="prefix-closer prefix-button" type="button">&times;</button>',
+      '<span class="prefix-title"></span>',
+      '<article class="prefix-info"></article>',
+      '<span class="prefix-status"></span>',
+      '<button class="prefix-prev prefix-button" type="button"></button>',
+      '<button class="prefix-next prefix-button" type="button"></button>'
+    ]
       .join("")
       .replace(/prefix\-/g, prefix + "-");
 
@@ -192,11 +188,9 @@
               if (e.target === $item) {
                 close(e);
               }
-            }
-            else if (e.target === $item || state.srcs.length === 1) {
+            } else if (e.target === $item || state.srcs.length === 1) {
               close(e);
-            }
-            else {
+            } else {
               next();
             }
           },
@@ -223,11 +217,9 @@
       initSwipe($vanillabox, function(direction) {
         if (direction === "left") {
           prev();
-        }
-        else if (direction === "right") {
+        } else if (direction === "right") {
           next();
-        }
-        else if (!state.isHTML) {
+        } else if (!state.isHTML) {
           close();
         }
       });
@@ -244,8 +236,7 @@
           if (e.target === lastFocussable && !e.shiftKey) {
             e.preventDefault();
             firstFocussable.focus();
-          }
-          else if (e.target === firstFocussable && e.shiftKey) {
+          } else if (e.target === firstFocussable && e.shiftKey) {
             e.preventDefault();
             lastFocussable.focus();
           }
@@ -323,14 +314,12 @@
         document.getElementById(src.substr(1)).innerHTML +
         "</div>";
       finish();
-    }
-    else {
+    } else {
       $cur.innerHTML = "";
 
       if (state.cached.indexOf(src) > -1) {
         setSrc();
-      }
-      else {
+      } else {
         var tmp = new Image();
 
         tmp.addEventListener(
@@ -354,13 +343,12 @@
       }
     }
     $title.innerHTML = title;
-    $status.hidden = state.srcs.length === 1
+    $status.hidden = state.srcs.length === 1;
     $status.innerHTML = [state.current + 1, state.srcs.length].join(" / ");
     if (info) {
       $info.innerHTML = info;
       $info.classList.add(prefix + "-info-visible");
-    }
-    else {
+    } else {
       $info.classList.remove(prefix + "-info-visible");
     }
   }
@@ -389,8 +377,7 @@
         if (original) {
           $el.setAttribute("aria-hidden", original);
           $el.removeAttribute("data-vanillabox");
-        }
-        else {
+        } else {
           $el.removeAttribute("aria-hidden");
         }
       });
@@ -412,8 +399,7 @@
       $closer.focus();
       $next.setAttribute("disabled", true);
       $prev.setAttribute("disabled", true);
-    }
-    else {
+    } else {
       $next.removeAttribute("disabled");
       $prev.removeAttribute("disabled");
       // focus on item to prevent focus on button on touch devices
@@ -441,8 +427,7 @@
       document.addEventListener("keydown", keyHandler, false);
       state.isOpen = true;
       settings.openCallback();
-    }
-    else {
+    } else {
       return true;
     }
   }
@@ -459,15 +444,18 @@
     if (!($containers instanceof NodeList || $containers instanceof Array)) {
       $containers = [$containers];
     }
-    settings = Object.assign({
+    settings = Object.assign(
+      {
         linkSelector: "a",
         checkImage: function($link) {
           var src = $link.href.toLowerCase();
 
-          return src.indexOf(".gif") != -1 ||
+          return (
+            src.indexOf(".gif") != -1 ||
             src.indexOf(".jpg") != -1 ||
             src.indexOf(".png") != -1 ||
             src.indexOf(".svg") != -1
+          );
         },
         getTitle: function($link) {
           return $link.getAttribute("title");
@@ -527,15 +515,13 @@
         .forEach(function($link, j) {
           var src = $link.href;
           var srclower = src.toLowerCase();
-          var srcAnchor = $link.getAttribute("href").indexOf("#") === 0;
+          var srcAnchor = $link.hash && $link.hash.length > 1;
           var title = settings.getTitle($link);
           var $info = settings.useInfo ? settings.getInfo($link) : "";
           var handler;
 
-          if (
-            settings.checkImage($link, srclower) || srcAnchor
-          ) {
-            srcs.push(srcAnchor ? $link.getAttribute("href") : src);
+          if (settings.checkImage($link, srclower) || srcAnchor) {
+            srcs.push(srcAnchor ? $link.hash : src);
             titles.push(title);
             infos.push($info);
 
@@ -554,7 +540,7 @@
     });
     return boxes.length === 1 ? boxes[0] : boxes;
   }
-  vanillabox.VERSION = 3.4;
+  vanillabox.VERSION = 3.5;
 
   window.vanillabox = vanillabox;
 })();
