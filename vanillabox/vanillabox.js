@@ -7,7 +7,7 @@
  *    $element: One or more DOM elements of <a> containing
  *    links to big images each containing a thumbnail image itself
  */
-(function() {
+(function () {
   "use strict";
 
   // Polyfills for e.g. IE
@@ -45,7 +45,7 @@
   }
 
   if (window.NodeList && !NodeList.prototype.forEach) {
-    NodeList.prototype.forEach = function(callback, thisArg) {
+    NodeList.prototype.forEach = function (callback, thisArg) {
       thisArg = thisArg || window;
       for (var i = 0; i < this.length; i++) {
         callback.call(thisArg, this[i], i, this);
@@ -176,11 +176,11 @@
 
     $vanillabox
       .querySelectorAll("." + prefix + "-item")
-      .forEach(function($item) {
+      .forEach(function ($item) {
         $items.push($item);
         $item.addEventListener(
           "click",
-          function(e) {
+          function (e) {
             if (!settings.nextOnClick) {
               return;
             }
@@ -214,7 +214,7 @@
     document.querySelector("body").appendChild($vanillabox);
 
     if (settings.useSwipe) {
-      initSwipe($vanillabox, function(direction) {
+      initSwipe($vanillabox, function (direction) {
         if (direction === "left") {
           prev();
         } else if (direction === "right") {
@@ -285,11 +285,11 @@
     var info = state.infos[state.current];
     var $out = $items[alternate ? 1 : 0];
     var $cur = $items[alternate ? 0 : 1];
-    var setSrc = function() {
+    var setSrc = function () {
       $cur.innerHTML = '<img alt="" src="' + src + '">';
       finish();
     };
-    var finish = function() {
+    var finish = function () {
       toggle(false, $cur);
 
       var focussables = $vanillabox.querySelectorAll(FOCUSSABLES);
@@ -324,7 +324,7 @@
 
         tmp.addEventListener(
           "load",
-          function() {
+          function () {
             state.cached.push(src);
             setSrc();
             tmp = null;
@@ -333,7 +333,7 @@
         );
         tmp.addEventListener(
           "error",
-          function(e) {
+          function (e) {
             setSrc();
             tmp = null;
           },
@@ -371,7 +371,7 @@
     // close by setting aria hidden
     document
       .querySelectorAll("body>*:not(.vanillabox)")
-      .forEach(function($el, i) {
+      .forEach(function ($el, i) {
         var original = $el.getAttribute("data-vanillabox");
 
         if (original) {
@@ -408,14 +408,14 @@
     }
 
     if (!state.isOpen) {
-      $items.forEach(function($item) {
+      $items.forEach(function ($item) {
         $item.innerHTML = "";
       });
       $vanillabox.removeAttribute("aria-hidden");
 
       document
         .querySelectorAll("body>*:not(.vanillabox)")
-        .forEach(function($el, i) {
+        .forEach(function ($el, i) {
           var original = $el.getAttribute("aria-hidden");
 
           if (original) {
@@ -434,7 +434,7 @@
 
   function clean() {
     this._events.forEach(
-      function(event, i) {
+      function (event, i) {
         event.$el.removeEventListener("click", event.handler);
       }.bind(this)
     );
@@ -447,7 +447,7 @@
     settings = Object.assign(
       {
         linkSelector: "a",
-        checkImage: function($link) {
+        checkImage: function ($link) {
           var src = $link.href.toLowerCase();
 
           return (
@@ -457,19 +457,19 @@
             src.indexOf(".svg") != -1
           );
         },
-        getTitle: function($link) {
+        getTitle: function ($link) {
           return $link.getAttribute("title");
         },
         useInfo: true,
-        getInfo: function($link) {
+        getInfo: function ($link) {
           var $el = $link.querySelector("figcaption");
           return $el ? $el.innerHTML : "";
         },
-        openCallback: function() {},
+        openCallback: function () { },
         nextOnClick: true,
         useSwipe: true,
-        itemCallback: function($item, title, info) {},
-        closeCallback: function() {}
+        itemCallback: function ($item, title, info) { },
+        closeCallback: function () { }
       },
       options
     );
@@ -479,11 +479,11 @@
     // once only
     setup && setup();
 
-    $containers.forEach(function($container, i) {
+    $containers.forEach(function ($container, i) {
       var srcs = [];
       var titles = [];
       var infos = [];
-      var start = function(j) {
+      var start = function (j) {
         var alreadyOpen = open();
 
         if (alreadyOpen && state.current === j) {
@@ -512,7 +512,7 @@
 
       $container
         .querySelectorAll(settings.linkSelector)
-        .forEach(function($link, j) {
+        .forEach(function ($link, j) {
           var src = $link.href;
           var srclower = src.toLowerCase();
           var srcAnchor = $link.hash && $link.hash.length > 1;
@@ -526,7 +526,7 @@
             infos.push($info);
 
             // only images
-            handler = function(e) {
+            handler = function (e) {
               start(j);
               e.preventDefault();
             };
