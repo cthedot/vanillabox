@@ -1,5 +1,6 @@
-/* vanillabox 4.0 */
+/* vanillabox 4.0.1 */
 .vanillabox {
+  color: #fff;
   background: rgba(0, 0, 0, 0.7);
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
@@ -50,7 +51,7 @@
 }
 
 .vanillabox-button {
-  color: #fff;
+  color: inherit;
   background: none;
   border-radius: 100%;
   border: none;
@@ -74,7 +75,7 @@
 .vanillabox-button.vanillabox-button:hover,
 .vanillabox-button.vanillabox-button:focus {
   outline: none;
-  color: #fff;
+  color: inherit;
   background-color: rgba(0, 0, 0, 0.2);
   opacity: 1;
 }
@@ -113,14 +114,14 @@
 .vanillabox-title,
 .vanillabox-status,
 .vanillabox-info {
-  z-index: 10;
+  z-index: 30;
   display: block;
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   padding: 0.5em;
-  color: #fff;
+  color: inherit;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
 .vanillabox-title {
