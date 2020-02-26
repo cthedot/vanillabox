@@ -7,7 +7,7 @@
  *    $element: One or more DOM elements of <a> containing
  *    links to big images each containing a thumbnail image itself
  */
-; (function () {
+;(function() {
   'use strict'
 
   // Polyfills for e.g. IE
@@ -16,12 +16,10 @@
     Object.defineProperty(Object, 'assign', {
       value: function assign(target, varArgs) {
         // .length of function is 2
-        'use strict'
         if (target == null) {
           // TypeError if undefined or null
           throw new TypeError('Cannot convert undefined or null to object')
         }
-
         var to = Object(target)
 
         for (var index = 1; index < arguments.length; index++) {
@@ -43,9 +41,8 @@
       configurable: true
     })
   }
-
   if (window.NodeList && !NodeList.prototype.forEach) {
-    NodeList.prototype.forEach = function (callback, thisArg) {
+    NodeList.prototype.forEach = function(callback, thisArg) {
       thisArg = thisArg || window
       for (var i = 0; i < this.length; i++) {
         callback.call(thisArg, this[i], i, this)
@@ -54,7 +51,7 @@
   }
 
   // touch events
-  function initSwipe($e, handler) {
+  function initSwipe($el, handler) {
     var POINTER_EVENTS = window.PointerEvent ? true : false
     var start = {}
     var end = {}
@@ -65,11 +62,10 @@
     function startHandler(e) {
       tracking = true
       /* Hack - e.timeStamp is whack in Fx/Android */
-      start.t = new Date().getTime()
+      start.t = Date.now()
       start.x = POINTER_EVENTS ? e.clientX : e.touches[0].clientX
       start.y = POINTER_EVENTS ? e.clientY : e.touches[0].clientY
     }
-
     function moveHandler(e) {
       if (tracking) {
         e.preventDefault()
@@ -77,11 +73,10 @@
         end.y = POINTER_EVENTS ? e.clientY : e.touches[0].clientY
       }
     }
-
     function endEvent(e) {
       if (tracking) {
         tracking = false
-        var now = new Date().getTime()
+        var now = Date.now()
         var deltaTime = now - start.t
         var deltaX = end.x - start.x
         var deltaY = end.y - start.y
@@ -112,15 +107,15 @@
       }
     }
     if (POINTER_EVENTS) {
-      $e.addEventListener('pointerdown', startHandler, false)
-      $e.addEventListener('pointermove', moveHandler, false)
-      $e.addEventListener('pointerup', endEvent, false)
-      $e.addEventListener('pointerleave', endEvent, false)
-      $e.addEventListener('pointercancel', endEvent, false)
+      $el.addEventListener('pointerdown', startHandler, false)
+      $el.addEventListener('pointermove', moveHandler, false)
+      $el.addEventListener('pointerup', endEvent, false)
+      $el.addEventListener('pointerleave', endEvent, false)
+      $el.addEventListener('pointercancel', endEvent, false)
     } else if (window.TouchEvent) {
-      $e.addEventListener('touchstart', startHandler, false)
-      $e.addEventListener('touchmove', moveHandler, false)
-      $e.addEventListener('touchend', endEvent, false)
+      $el.addEventListener('touchstart', startHandler, false)
+      $el.addEventListener('touchmove', moveHandler, false)
+      $el.addEventListener('touchend', endEvent, false)
     }
   }
 
@@ -130,10 +125,8 @@
     'select:not([disabled]), textarea:not([disabled]),' +
     'button:not([disabled]), iframe, object, embed, *[tabindex],' +
     '*[contenteditable]'
-
   var firstFocussable
   var lastFocussable
-
   var settings
   var prefix = 'vanillabox'
   var alternate = true
@@ -176,11 +169,11 @@
 
     $vanillabox
       .querySelectorAll('.' + prefix + '-item')
-      .forEach(function ($item) {
+      .forEach(function($item) {
         $items.push($item)
         $item.addEventListener(
           'click',
-          function (e) {
+          function(e) {
             if (!settings.nextOnClick) {
               return
             }
@@ -201,20 +194,17 @@
     $title = $vanillabox.querySelector('.' + prefix + '-title')
     $status = $vanillabox.querySelector('.' + prefix + '-status')
     $info = $vanillabox.querySelector('.' + prefix + '-info')
-
     $closer = $vanillabox.querySelector('.' + prefix + '-closer')
     $closer.addEventListener('click', close, false)
-
     $prev = $vanillabox.querySelector('.' + prefix + '-prev')
     $prev.addEventListener('click', prev, false)
-
     $next = $vanillabox.querySelector('.' + prefix + '-next')
     $next.addEventListener('click', next, false)
 
     document.querySelector('body').appendChild($vanillabox)
 
     if (settings.useSwipe) {
-      initSwipe($vanillabox, function (direction) {
+      initSwipe($vanillabox, function(direction) {
         if (direction === 'left') {
           prev()
         } else if (direction === 'right') {
@@ -224,8 +214,6 @@
         }
       })
     }
-
-    // once only
     setup = false
   }
 
@@ -275,27 +263,27 @@
 
   function show(initial) {
     if (!initial && state.srcs.length === 1) {
-      // if 1 only just close after open
+      // if 1 only directly close after open
       close()
       return
     }
     var src = state.srcs[state.current]
-    var isHTML = (state.isHTML = src.indexOf('#') === 0)
+    var isHTML = (state.isHTML = src && src.indexOf('#') === 0)
     var title = state.titles[state.current]
     var info = state.infos[state.current]
     var $out = $items[alternate ? 1 : 0]
     var $cur = $items[alternate ? 0 : 1]
-    var setSrc = function () {
+    var setSrc = function() {
       $cur.innerHTML = '<img alt="" src="' + src + '">'
       finish()
     }
-    var finish = function () {
+    var finish = function() {
       toggle(false, $cur)
 
-      var focussables = $vanillabox.querySelectorAll(FOCUSSABLES)
+      var $focussables = $vanillabox.querySelectorAll(FOCUSSABLES)
 
-      firstFocussable = focussables[0]
-      lastFocussable = focussables[focussables.length - 1]
+      firstFocussable = $focussables[0]
+      lastFocussable = $focussables[$focussables.length - 1]
 
       $vanillabox.classList.remove(prefix + '-loading')
       settings.itemCallback($cur, title, info)
@@ -324,7 +312,7 @@
 
         tmp.addEventListener(
           'load',
-          function () {
+          function() {
             state.cached.push(src)
             setSrc()
             tmp = null
@@ -333,7 +321,7 @@
         )
         tmp.addEventListener(
           'error',
-          function (e) {
+          function(e) {
             setSrc()
             tmp = null
           },
@@ -353,67 +341,50 @@
     }
   }
 
-  function prev() {
-    state.current =
-      state.current > 0 ? state.current - 1 : state.srcs.length - 1
-    show()
+  function updatePrevNext(nextCurrent, singleitem) {
+    if (singleitem) {
+      $prev.setAttribute('disabled', true)
+      $next.setAttribute('disabled', true)
+    } else if (settings.rotate) {
+      $prev.removeAttribute('disabled')
+      $next.removeAttribute('disabled')
+    } else {
+      $prev[nextCurrent === 0 ? 'setAttribute' : 'removeAttribute'](
+        'disabled',
+        nextCurrent === 0 ? true : undefined
+      )
+      $next[
+        nextCurrent === state.srcs.length - 1
+          ? 'setAttribute'
+          : 'removeAttribute'
+      ]('disabled', nextCurrent === state.srcs.length - 1 ? true : undefined)
+    }
   }
 
-  function next() {
-    state.current =
-      state.current >= state.srcs.length - 1 ? 0 : state.current + 1
-    show()
-  }
-
-  function close() {
-    document.removeEventListener('keydown', keyHandler)
-
-    // close by setting aria hidden
-    document
-      .querySelectorAll('body>*:not(.vanillabox)')
-      .forEach(function ($el, i) {
-        var original = $el.getAttribute('data-vanillabox')
-
-        if (original) {
-          $el.setAttribute('aria-hidden', original)
-          $el.removeAttribute('data-vanillabox')
-        } else {
-          $el.removeAttribute('aria-hidden')
-        }
-      })
-    $vanillabox.setAttribute('aria-hidden', 'true')
-    $focusBefore && $focusBefore.focus()
-    state.isOpen = false
-    settings.closeCallback()
-  }
-
-  function open() {
+  function open(nextCurrent) {
     var singleitem = state.srcs.length === 1
 
     $focusBefore = document.activeElement
     $vanillabox.classList[singleitem ? 'add' : 'remove'](prefix + '-singleitem')
+    updatePrevNext(nextCurrent, singleitem)
 
     if (singleitem) {
       $closer.focus()
-      $next.setAttribute('disabled', true)
-      $prev.setAttribute('disabled', true)
     } else {
-      $next.removeAttribute('disabled')
-      $prev.removeAttribute('disabled')
       // focus on item to prevent focus on button on touch devices
       var $focus = $items[alternate ? 1 : 0].querySelector('*')
       $focus && $focus.focus()
     }
 
     if (!state.isOpen) {
-      $items.forEach(function ($item) {
+      $items.forEach(function($item) {
         $item.innerHTML = ''
       })
       $vanillabox.removeAttribute('aria-hidden')
 
       document
         .querySelectorAll('body>*:not(.vanillabox)')
-        .forEach(function ($el, i) {
+        .forEach(function($el, i) {
           var original = $el.getAttribute('aria-hidden')
 
           if (original) {
@@ -430,9 +401,52 @@
     }
   }
 
+  function prev() {
+    var current = state.current
+
+    if (current === 0) {
+      close()
+    }
+    state.current = current > 0 ? current - 1 : state.srcs.length - 1
+    updatePrevNext(state.current)
+    show()
+  }
+  function next() {
+    var current = state.current
+
+    if (current >= state.srcs.length - 1) {
+      close()
+    }
+    state.current = current >= state.srcs.length - 1 ? 0 : current + 1
+    updatePrevNext(state.current)
+    show()
+  }
+
+  function close() {
+    document.removeEventListener('keydown', keyHandler)
+
+    // close by setting aria hidden
+    document
+      .querySelectorAll('body>*:not(.vanillabox)')
+      .forEach(function($el, i) {
+        var original = $el.getAttribute('data-vanillabox')
+
+        if (original) {
+          $el.setAttribute('aria-hidden', original)
+          $el.removeAttribute('data-vanillabox')
+        } else {
+          $el.removeAttribute('aria-hidden')
+        }
+      })
+    $vanillabox.setAttribute('aria-hidden', 'true')
+    $focusBefore && $focusBefore.focus()
+    state.isOpen = false
+    settings.closeCallback()
+  }
+
   function clean() {
     this._events.forEach(
-      function (event, i) {
+      function(event, i) {
         event.$el.removeEventListener('click', event.handler)
       }.bind(this)
     )
@@ -445,7 +459,18 @@
     settings = Object.assign(
       {
         linkSelector: 'a',
-        checkImage: function ($link) {
+        nextOnClick: true,
+        useSwipe: true,
+        rotate: true,
+        useInfo: true,
+        getInfo: function($link) {
+          var $el = $link.querySelector('figcaption')
+          return $el ? $el.innerHTML : ''
+        },
+        getTitle: function($link) {
+          return $link.getAttribute('title')
+        },
+        checkImage: function($link) {
           var src = $link.href.toLowerCase()
 
           return (
@@ -455,19 +480,9 @@
             src.indexOf('.svg') != -1
           )
         },
-        getTitle: function ($link) {
-          return $link.getAttribute('title')
-        },
-        useInfo: true,
-        getInfo: function ($link) {
-          var $el = $link.querySelector('figcaption')
-          return $el ? $el.innerHTML : ''
-        },
-        openCallback: function () { },
-        nextOnClick: true,
-        useSwipe: true,
-        itemCallback: function ($item, title, info) { },
-        closeCallback: function () { }
+        openCallback: function() {},
+        itemCallback: function($item, title, info) {},
+        closeCallback: function() {}
       },
       options
     )
@@ -477,21 +492,23 @@
     // once only
     setup && setup()
 
-    $containers.forEach(function ($container, i) {
+    $containers.forEach(function($container) {
       var srcs = []
       var titles = []
       var infos = []
-      var start = function (j) {
-        var alreadyOpen = open()
-
-        if (alreadyOpen && state.current === j) {
-          close()
-          return
-        }
+      var counter = 0
+      var start = function(index) {
         state.srcs = srcs
         state.titles = titles
         state.infos = infos
-        state.current = j || 0
+
+        var alreadyOpen = open(index)
+
+        if (alreadyOpen && state.current === index) {
+          close()
+          return
+        }
+        state.current = index || 0
         show(true)
       }
       var box = {
@@ -510,11 +527,11 @@
 
       $container
         .querySelectorAll(settings.linkSelector)
-        .forEach(function ($link, j) {
+        .forEach(function($link) {
           var src = $link.href
           var srclower = src.toLowerCase()
           var srcAnchor = $link.hash && $link.hash.length > 1
-          var title = settings.getTitle($link)
+          var title = settings.getTitle($link) || ''
           var $info = settings.useInfo ? settings.getInfo($link) : ''
           var handler
 
@@ -524,21 +541,24 @@
             infos.push($info)
 
             // only images
-            handler = function (e) {
-              start(j)
-              e.preventDefault()
-            }
+            handler = (function(index) {
+              return function(e) {
+                start(index)
+                e.preventDefault()
+              }
+            })(counter)
             $link.addEventListener('click', handler, false)
             box._events.push({
               $el: $link,
               handler: handler
             })
+            counter += 1
           }
         })
     })
     return boxes.length === 1 ? boxes[0] : boxes
   }
-  vanillabox.VERSION = 3.5
+  vanillabox.VERSION = 4.0
 
   window.vanillabox = vanillabox
 })()
