@@ -366,7 +366,7 @@
 
     $focusBefore = document.activeElement
     $vanillabox.classList[singleitem ? 'add' : 'remove'](prefix + '-singleitem')
-    updatePrevNext(nextCurrent, singleitem)
+    updatePrevNext(nextCurrent || 0, singleitem)
 
     if (singleitem) {
       $closer.focus()
@@ -558,7 +558,7 @@
     })
     return boxes.length === 1 ? boxes[0] : boxes
   }
-  vanillabox.VERSION = 4.0
+  vanillabox.VERSION = 4.1
 
   window.vanillabox = vanillabox
 })()

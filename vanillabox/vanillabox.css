@@ -1,4 +1,4 @@
-/* vanillabox 4.0.1 */
+/* vanillabox 4.1 */
 .vanillabox {
   color: #fff;
   background: rgba(0, 0, 0, 0.7);
@@ -65,15 +65,18 @@
   width: 1.5em;
   height: 1.5em;
   line-height: 1;
-  padding: 0 0 0.2em;
+  padding: 0;
   overflow: hidden;
   transition: 0.25s 0.05s;
 }
-.vanillabox:hover .vanillabox-button {
+.vanillabox-button[disabled] {
+  pointer-events: none;
+}
+.vanillabox:hover .vanillabox-button:not([disabled]) {
   opacity: 0.6;
 }
-.vanillabox-button.vanillabox-button:hover,
-.vanillabox-button.vanillabox-button:focus {
+.vanillabox-button.vanillabox-button:not([disabled]):hover,
+.vanillabox-button.vanillabox-button:not([disabled]):focus {
   outline: none;
   color: inherit;
   background-color: rgba(0, 0, 0, 0.2);
@@ -89,6 +92,7 @@
   font-size: 3em;
   bottom: 1em;
   opacity: 0;
+  padding-bottom: 0.2em;
 }
 @media (min-height: 10em) {
   .vanillabox-prev,
