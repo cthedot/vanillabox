@@ -103,10 +103,10 @@
   right: 0.1em;
 }
 .vanillabox-prev:after {
-  content: "<";
+  content: '<';
 }
 .vanillabox-next:after {
-  content: ">";
+  content: '>';
 }
 
 .vanillabox-title,

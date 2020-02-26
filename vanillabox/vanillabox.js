@@ -7,136 +7,136 @@
  *    $element: One or more DOM elements of <a> containing
  *    links to big images each containing a thumbnail image itself
  */
-(function () {
-  "use strict";
+; (function () {
+  'use strict'
 
   // Polyfills for e.g. IE
-  if (typeof Object.assign != "function") {
+  if (typeof Object.assign != 'function') {
     // Must be writable: true, enumerable: false, configurable: true
-    Object.defineProperty(Object, "assign", {
+    Object.defineProperty(Object, 'assign', {
       value: function assign(target, varArgs) {
         // .length of function is 2
-        "use strict";
+        'use strict'
         if (target == null) {
           // TypeError if undefined or null
-          throw new TypeError("Cannot convert undefined or null to object");
+          throw new TypeError('Cannot convert undefined or null to object')
         }
 
-        var to = Object(target);
+        var to = Object(target)
 
         for (var index = 1; index < arguments.length; index++) {
-          var nextSource = arguments[index];
+          var nextSource = arguments[index]
 
           if (nextSource != null) {
             // Skip over if undefined or null
             for (var nextKey in nextSource) {
               // Avoid bugs when hasOwnProperty is shadowed
               if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-                to[nextKey] = nextSource[nextKey];
+                to[nextKey] = nextSource[nextKey]
               }
             }
           }
         }
-        return to;
+        return to
       },
       writable: true,
       configurable: true
-    });
+    })
   }
 
   if (window.NodeList && !NodeList.prototype.forEach) {
     NodeList.prototype.forEach = function (callback, thisArg) {
-      thisArg = thisArg || window;
+      thisArg = thisArg || window
       for (var i = 0; i < this.length; i++) {
-        callback.call(thisArg, this[i], i, this);
+        callback.call(thisArg, this[i], i, this)
       }
-    };
+    }
   }
 
   // touch events
   function initSwipe($e, handler) {
-    var POINTER_EVENTS = window.PointerEvent ? true : false;
-    var start = {};
-    var end = {};
-    var tracking = false;
-    var thresholdTime = 500;
-    var thresholdDistance = 100;
+    var POINTER_EVENTS = window.PointerEvent ? true : false
+    var start = {}
+    var end = {}
+    var tracking = false
+    var thresholdTime = 500
+    var thresholdDistance = 100
 
     function startHandler(e) {
-      tracking = true;
+      tracking = true
       /* Hack - e.timeStamp is whack in Fx/Android */
-      start.t = new Date().getTime();
-      start.x = POINTER_EVENTS ? e.clientX : e.touches[0].clientX;
-      start.y = POINTER_EVENTS ? e.clientY : e.touches[0].clientY;
+      start.t = new Date().getTime()
+      start.x = POINTER_EVENTS ? e.clientX : e.touches[0].clientX
+      start.y = POINTER_EVENTS ? e.clientY : e.touches[0].clientY
     }
 
     function moveHandler(e) {
       if (tracking) {
-        e.preventDefault();
-        end.x = POINTER_EVENTS ? e.clientX : e.touches[0].clientX;
-        end.y = POINTER_EVENTS ? e.clientY : e.touches[0].clientY;
+        e.preventDefault()
+        end.x = POINTER_EVENTS ? e.clientX : e.touches[0].clientX
+        end.y = POINTER_EVENTS ? e.clientY : e.touches[0].clientY
       }
     }
 
     function endEvent(e) {
       if (tracking) {
-        tracking = false;
-        var now = new Date().getTime();
-        var deltaTime = now - start.t;
-        var deltaX = end.x - start.x;
-        var deltaY = end.y - start.y;
+        tracking = false
+        var now = new Date().getTime()
+        var deltaTime = now - start.t
+        var deltaX = end.x - start.x
+        var deltaY = end.y - start.y
         // if not too slow work out what the movement was
         if (deltaTime < thresholdTime) {
           if (
             deltaX > thresholdDistance &&
             Math.abs(deltaY) < thresholdDistance
           ) {
-            handler("left");
+            handler('left')
           } else if (
             -deltaX > thresholdDistance &&
             Math.abs(deltaY) < thresholdDistance
           ) {
-            handler("right");
+            handler('right')
           } else if (
             deltaY > thresholdDistance &&
             Math.abs(deltaX) < thresholdDistance
           ) {
-            handler("up");
+            handler('up')
           } else if (
             -deltaY > thresholdDistance &&
             Math.abs(deltaX) < thresholdDistance
           ) {
-            handler("down");
+            handler('down')
           }
         }
       }
     }
     if (POINTER_EVENTS) {
-      $e.addEventListener("pointerdown", startHandler, false);
-      $e.addEventListener("pointermove", moveHandler, false);
-      $e.addEventListener("pointerup", endEvent, false);
-      $e.addEventListener("pointerleave", endEvent, false);
-      $e.addEventListener("pointercancel", endEvent, false);
+      $e.addEventListener('pointerdown', startHandler, false)
+      $e.addEventListener('pointermove', moveHandler, false)
+      $e.addEventListener('pointerup', endEvent, false)
+      $e.addEventListener('pointerleave', endEvent, false)
+      $e.addEventListener('pointercancel', endEvent, false)
     } else if (window.TouchEvent) {
-      $e.addEventListener("touchstart", startHandler, false);
-      $e.addEventListener("touchmove", moveHandler, false);
-      $e.addEventListener("touchend", endEvent, false);
+      $e.addEventListener('touchstart', startHandler, false)
+      $e.addEventListener('touchmove', moveHandler, false)
+      $e.addEventListener('touchend', endEvent, false)
     }
   }
 
   // vanillabox
   var FOCUSSABLES =
-    "a[href], area[href], input:not([disabled])," +
-    "select:not([disabled]), textarea:not([disabled])," +
-    "button:not([disabled]), iframe, object, embed, *[tabindex]," +
-    "*[contenteditable]";
+    'a[href], area[href], input:not([disabled]),' +
+    'select:not([disabled]), textarea:not([disabled]),' +
+    'button:not([disabled]), iframe, object, embed, *[tabindex],' +
+    '*[contenteditable]'
 
-  var firstFocussable;
-  var lastFocussable;
+  var firstFocussable
+  var lastFocussable
 
-  var settings;
-  var prefix = "vanillabox";
-  var alternate = true;
+  var settings
+  var prefix = 'vanillabox'
+  var alternate = true
   var state = {
     srcs: [],
     titles: [],
@@ -145,22 +145,22 @@
     isOpen: false,
     current: 0,
     isHTML: false
-  };
-  var $vanillabox;
-  var $title;
-  var $status;
-  var $info;
-  var $closer;
-  var $prev;
-  var $next;
-  var $items = [];
-  var $focusBefore;
+  }
+  var $vanillabox
+  var $title
+  var $status
+  var $info
+  var $closer
+  var $prev
+  var $next
+  var $items = []
+  var $focusBefore
 
   function setup() {
     // once only
-    $vanillabox = document.createElement("div");
-    $vanillabox.setAttribute("aria-hidden", "true");
-    $vanillabox.classList.add(prefix);
+    $vanillabox = document.createElement('div')
+    $vanillabox.setAttribute('aria-hidden', 'true')
+    $vanillabox.classList.add(prefix)
     $vanillabox.innerHTML = [
       '<div class="prefix-item"></div>',
       '<div class="prefix-item"></div>',
@@ -171,62 +171,62 @@
       '<button class="prefix-prev prefix-button" type="button"></button>',
       '<button class="prefix-next prefix-button" type="button"></button>'
     ]
-      .join("")
-      .replace(/prefix\-/g, prefix + "-");
+      .join('')
+      .replace(/prefix\-/g, prefix + '-')
 
     $vanillabox
-      .querySelectorAll("." + prefix + "-item")
+      .querySelectorAll('.' + prefix + '-item')
       .forEach(function ($item) {
-        $items.push($item);
+        $items.push($item)
         $item.addEventListener(
-          "click",
+          'click',
           function (e) {
             if (!settings.nextOnClick) {
-              return;
+              return
             }
             if (state.isHTML) {
               if (e.target === $item) {
-                close(e);
+                close(e)
               }
             } else if (e.target === $item || state.srcs.length === 1) {
-              close(e);
+              close(e)
             } else {
-              next();
+              next()
             }
           },
           false
-        );
-      });
+        )
+      })
 
-    $title = $vanillabox.querySelector("." + prefix + "-title");
-    $status = $vanillabox.querySelector("." + prefix + "-status");
-    $info = $vanillabox.querySelector("." + prefix + "-info");
+    $title = $vanillabox.querySelector('.' + prefix + '-title')
+    $status = $vanillabox.querySelector('.' + prefix + '-status')
+    $info = $vanillabox.querySelector('.' + prefix + '-info')
 
-    $closer = $vanillabox.querySelector("." + prefix + "-closer");
-    $closer.addEventListener("click", close, false);
+    $closer = $vanillabox.querySelector('.' + prefix + '-closer')
+    $closer.addEventListener('click', close, false)
 
-    $prev = $vanillabox.querySelector("." + prefix + "-prev");
-    $prev.addEventListener("click", prev, false);
+    $prev = $vanillabox.querySelector('.' + prefix + '-prev')
+    $prev.addEventListener('click', prev, false)
 
-    $next = $vanillabox.querySelector("." + prefix + "-next");
-    $next.addEventListener("click", next, false);
+    $next = $vanillabox.querySelector('.' + prefix + '-next')
+    $next.addEventListener('click', next, false)
 
-    document.querySelector("body").appendChild($vanillabox);
+    document.querySelector('body').appendChild($vanillabox)
 
     if (settings.useSwipe) {
       initSwipe($vanillabox, function (direction) {
-        if (direction === "left") {
-          prev();
-        } else if (direction === "right") {
-          next();
+        if (direction === 'left') {
+          prev()
+        } else if (direction === 'right') {
+          next()
         } else if (!state.isHTML) {
-          close();
+          close()
         }
-      });
+      })
     }
 
     // once only
-    setup = false;
+    setup = false
   }
 
   function keyHandler(e) {
@@ -234,77 +234,77 @@
       switch (e.keyCode) {
         case 9: // TAB
           if (e.target === lastFocussable && !e.shiftKey) {
-            e.preventDefault();
-            firstFocussable.focus();
+            e.preventDefault()
+            firstFocussable.focus()
           } else if (e.target === firstFocussable && e.shiftKey) {
-            e.preventDefault();
-            lastFocussable.focus();
+            e.preventDefault()
+            lastFocussable.focus()
           }
-          break;
+          break
         case 27: // ESC
-          close();
-          break;
+          close()
+          break
         case 32: // spacebar
-          if (!state.isHTML) next();
-          break;
+          if (!state.isHTML) next()
+          break
         case 39: // CL
-          if (!state.isHTML) next();
-          break;
+          if (!state.isHTML) next()
+          break
         case 37: // CR
-          if (!state.isHTML) prev();
-          break;
+          if (!state.isHTML) prev()
+          break
       }
     }
   }
 
   function toggle($out, $cur) {
     if ($out) {
-      $out.classList.add(prefix + "-out");
-      $out.classList.remove(prefix + "-current");
+      $out.classList.add(prefix + '-out')
+      $out.classList.remove(prefix + '-current')
     }
     if ($cur) {
-      $cur.classList.add(prefix + "-direct");
-      $cur.classList.remove(prefix + "-out");
-      $cur.classList.remove(prefix + "-current");
+      $cur.classList.add(prefix + '-direct')
+      $cur.classList.remove(prefix + '-out')
+      $cur.classList.remove(prefix + '-current')
       // do it now:
-      getComputedStyle($cur).opacity;
-      $cur.classList.remove(prefix + "-direct");
-      $cur.classList.add(prefix + "-current");
+      getComputedStyle($cur).opacity
+      $cur.classList.remove(prefix + '-direct')
+      $cur.classList.add(prefix + '-current')
     }
   }
 
   function show(initial) {
     if (!initial && state.srcs.length === 1) {
       // if 1 only just close after open
-      close();
-      return;
+      close()
+      return
     }
-    var src = state.srcs[state.current];
-    var isHTML = (state.isHTML = src.indexOf("#") === 0);
-    var title = state.titles[state.current];
-    var info = state.infos[state.current];
-    var $out = $items[alternate ? 1 : 0];
-    var $cur = $items[alternate ? 0 : 1];
+    var src = state.srcs[state.current]
+    var isHTML = (state.isHTML = src.indexOf('#') === 0)
+    var title = state.titles[state.current]
+    var info = state.infos[state.current]
+    var $out = $items[alternate ? 1 : 0]
+    var $cur = $items[alternate ? 0 : 1]
     var setSrc = function () {
-      $cur.innerHTML = '<img alt="" src="' + src + '">';
-      finish();
-    };
+      $cur.innerHTML = '<img alt="" src="' + src + '">'
+      finish()
+    }
     var finish = function () {
-      toggle(false, $cur);
+      toggle(false, $cur)
 
-      var focussables = $vanillabox.querySelectorAll(FOCUSSABLES);
+      var focussables = $vanillabox.querySelectorAll(FOCUSSABLES)
 
-      firstFocussable = focussables[0];
-      lastFocussable = focussables[focussables.length - 1];
+      firstFocussable = focussables[0]
+      lastFocussable = focussables[focussables.length - 1]
 
-      $vanillabox.classList.remove(prefix + "-loading");
-      settings.itemCallback($cur, title, info);
-    };
+      $vanillabox.classList.remove(prefix + '-loading')
+      settings.itemCallback($cur, title, info)
+    }
 
-    alternate = !alternate;
-    $vanillabox.classList.add(prefix + "-loading");
+    alternate = !alternate
+    $vanillabox.classList.add(prefix + '-loading')
 
-    toggle($out, false);
+    toggle($out, false)
 
     if (isHTML) {
       $cur.innerHTML =
@@ -312,158 +312,156 @@
         prefix +
         '-html">' +
         document.getElementById(src.substr(1)).innerHTML +
-        "</div>";
-      finish();
+        '</div>'
+      finish()
     } else {
-      $cur.innerHTML = "";
+      $cur.innerHTML = ''
 
       if (state.cached.indexOf(src) > -1) {
-        setSrc();
+        setSrc()
       } else {
-        var tmp = new Image();
+        var tmp = new Image()
 
         tmp.addEventListener(
-          "load",
+          'load',
           function () {
-            state.cached.push(src);
-            setSrc();
-            tmp = null;
+            state.cached.push(src)
+            setSrc()
+            tmp = null
           },
           false
-        );
+        )
         tmp.addEventListener(
-          "error",
+          'error',
           function (e) {
-            setSrc();
-            tmp = null;
+            setSrc()
+            tmp = null
           },
           false
-        );
-        tmp.src = src;
+        )
+        tmp.src = src
       }
     }
-    $title.innerHTML = title;
-    $status.hidden = state.srcs.length === 1;
-    $status.innerHTML = [state.current + 1, state.srcs.length].join(" / ");
+    $title.innerHTML = title
+    $status.hidden = state.srcs.length === 1
+    $status.innerHTML = [state.current + 1, state.srcs.length].join(' / ')
     if (info) {
-      $info.innerHTML = info;
-      $info.classList.add(prefix + "-info-visible");
+      $info.innerHTML = info
+      $info.classList.add(prefix + '-info-visible')
     } else {
-      $info.classList.remove(prefix + "-info-visible");
+      $info.classList.remove(prefix + '-info-visible')
     }
   }
 
   function prev() {
     state.current =
-      state.current > 0 ? state.current - 1 : state.srcs.length - 1;
-    show();
+      state.current > 0 ? state.current - 1 : state.srcs.length - 1
+    show()
   }
 
   function next() {
     state.current =
-      state.current >= state.srcs.length - 1 ? 0 : state.current + 1;
-    show();
+      state.current >= state.srcs.length - 1 ? 0 : state.current + 1
+    show()
   }
 
   function close() {
-    document.removeEventListener("keydown", keyHandler);
+    document.removeEventListener('keydown', keyHandler)
 
     // close by setting aria hidden
     document
-      .querySelectorAll("body>*:not(.vanillabox)")
+      .querySelectorAll('body>*:not(.vanillabox)')
       .forEach(function ($el, i) {
-        var original = $el.getAttribute("data-vanillabox");
+        var original = $el.getAttribute('data-vanillabox')
 
         if (original) {
-          $el.setAttribute("aria-hidden", original);
-          $el.removeAttribute("data-vanillabox");
+          $el.setAttribute('aria-hidden', original)
+          $el.removeAttribute('data-vanillabox')
         } else {
-          $el.removeAttribute("aria-hidden");
+          $el.removeAttribute('aria-hidden')
         }
-      });
-    $vanillabox.setAttribute("aria-hidden", "true");
-    $focusBefore && $focusBefore.focus();
-    state.isOpen = false;
-    settings.closeCallback();
+      })
+    $vanillabox.setAttribute('aria-hidden', 'true')
+    $focusBefore && $focusBefore.focus()
+    state.isOpen = false
+    settings.closeCallback()
   }
 
   function open() {
-    var singleitem = state.srcs.length === 1;
+    var singleitem = state.srcs.length === 1
 
-    $focusBefore = document.activeElement;
-    $vanillabox.classList[singleitem ? "add" : "remove"](
-      prefix + "-singleitem"
-    );
+    $focusBefore = document.activeElement
+    $vanillabox.classList[singleitem ? 'add' : 'remove'](prefix + '-singleitem')
 
     if (singleitem) {
-      $closer.focus();
-      $next.setAttribute("disabled", true);
-      $prev.setAttribute("disabled", true);
+      $closer.focus()
+      $next.setAttribute('disabled', true)
+      $prev.setAttribute('disabled', true)
     } else {
-      $next.removeAttribute("disabled");
-      $prev.removeAttribute("disabled");
+      $next.removeAttribute('disabled')
+      $prev.removeAttribute('disabled')
       // focus on item to prevent focus on button on touch devices
-      var $focus = $items[alternate ? 1 : 0].querySelector("*");
-      $focus && $focus.focus();
+      var $focus = $items[alternate ? 1 : 0].querySelector('*')
+      $focus && $focus.focus()
     }
 
     if (!state.isOpen) {
       $items.forEach(function ($item) {
-        $item.innerHTML = "";
-      });
-      $vanillabox.removeAttribute("aria-hidden");
+        $item.innerHTML = ''
+      })
+      $vanillabox.removeAttribute('aria-hidden')
 
       document
-        .querySelectorAll("body>*:not(.vanillabox)")
+        .querySelectorAll('body>*:not(.vanillabox)')
         .forEach(function ($el, i) {
-          var original = $el.getAttribute("aria-hidden");
+          var original = $el.getAttribute('aria-hidden')
 
           if (original) {
-            $el.setAttribute("data-vanillabox", original);
+            $el.setAttribute('data-vanillabox', original)
           }
-          $el.setAttribute("aria-hidden", "true");
-        });
+          $el.setAttribute('aria-hidden', 'true')
+        })
 
-      document.addEventListener("keydown", keyHandler, false);
-      state.isOpen = true;
-      settings.openCallback();
+      document.addEventListener('keydown', keyHandler, false)
+      state.isOpen = true
+      settings.openCallback()
     } else {
-      return true;
+      return true
     }
   }
 
   function clean() {
     this._events.forEach(
       function (event, i) {
-        event.$el.removeEventListener("click", event.handler);
+        event.$el.removeEventListener('click', event.handler)
       }.bind(this)
-    );
+    )
   }
 
   function vanillabox($containers, options) {
     if (!($containers instanceof NodeList || $containers instanceof Array)) {
-      $containers = [$containers];
+      $containers = [$containers]
     }
     settings = Object.assign(
       {
-        linkSelector: "a",
+        linkSelector: 'a',
         checkImage: function ($link) {
-          var src = $link.href.toLowerCase();
+          var src = $link.href.toLowerCase()
 
           return (
-            src.indexOf(".gif") != -1 ||
-            src.indexOf(".jpg") != -1 ||
-            src.indexOf(".png") != -1 ||
-            src.indexOf(".svg") != -1
-          );
+            src.indexOf('.gif') != -1 ||
+            src.indexOf('.jpg') != -1 ||
+            src.indexOf('.png') != -1 ||
+            src.indexOf('.svg') != -1
+          )
         },
         getTitle: function ($link) {
-          return $link.getAttribute("title");
+          return $link.getAttribute('title')
         },
         useInfo: true,
         getInfo: function ($link) {
-          var $el = $link.querySelector("figcaption");
-          return $el ? $el.innerHTML : "";
+          var $el = $link.querySelector('figcaption')
+          return $el ? $el.innerHTML : ''
         },
         openCallback: function () { },
         nextOnClick: true,
@@ -472,30 +470,30 @@
         closeCallback: function () { }
       },
       options
-    );
+    )
 
-    var boxes = [];
+    var boxes = []
 
     // once only
-    setup && setup();
+    setup && setup()
 
     $containers.forEach(function ($container, i) {
-      var srcs = [];
-      var titles = [];
-      var infos = [];
+      var srcs = []
+      var titles = []
+      var infos = []
       var start = function (j) {
-        var alreadyOpen = open();
+        var alreadyOpen = open()
 
         if (alreadyOpen && state.current === j) {
-          close();
-          return;
+          close()
+          return
         }
-        state.srcs = srcs;
-        state.titles = titles;
-        state.infos = infos;
-        state.current = j || 0;
-        show(true);
-      };
+        state.srcs = srcs
+        state.titles = titles
+        state.infos = infos
+        state.current = j || 0
+        show(true)
+      }
       var box = {
         _events: [],
         open: start,
@@ -503,44 +501,44 @@
         prev: prev,
         close: close,
         clean: clean
-      };
-      boxes.push(box);
+      }
+      boxes.push(box)
 
-      if ($container.tagName === "A") {
-        $container = $container.parentElement;
+      if ($container.tagName === 'A') {
+        $container = $container.parentElement
       }
 
       $container
         .querySelectorAll(settings.linkSelector)
         .forEach(function ($link, j) {
-          var src = $link.href;
-          var srclower = src.toLowerCase();
-          var srcAnchor = $link.hash && $link.hash.length > 1;
-          var title = settings.getTitle($link);
-          var $info = settings.useInfo ? settings.getInfo($link) : "";
-          var handler;
+          var src = $link.href
+          var srclower = src.toLowerCase()
+          var srcAnchor = $link.hash && $link.hash.length > 1
+          var title = settings.getTitle($link)
+          var $info = settings.useInfo ? settings.getInfo($link) : ''
+          var handler
 
           if (settings.checkImage($link, srclower) || srcAnchor) {
-            srcs.push(srcAnchor ? $link.hash : src);
-            titles.push(title);
-            infos.push($info);
+            srcs.push(srcAnchor ? $link.hash : src)
+            titles.push(title)
+            infos.push($info)
 
             // only images
             handler = function (e) {
-              start(j);
-              e.preventDefault();
-            };
-            $link.addEventListener("click", handler, false);
+              start(j)
+              e.preventDefault()
+            }
+            $link.addEventListener('click', handler, false)
             box._events.push({
               $el: $link,
               handler: handler
-            });
+            })
           }
-        });
-    });
-    return boxes.length === 1 ? boxes[0] : boxes;
+        })
+    })
+    return boxes.length === 1 ? boxes[0] : boxes
   }
-  vanillabox.VERSION = 3.5;
+  vanillabox.VERSION = 3.5
 
-  window.vanillabox = vanillabox;
-})();
+  window.vanillabox = vanillabox
+})()
