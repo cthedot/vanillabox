@@ -558,7 +558,7 @@
     })
     return boxes.length === 1 ? boxes[0] : boxes
   }
-  vanillabox.VERSION = 4.1
+  vanillabox.VERSION = 4.2
 
   window.vanillabox = vanillabox
 })()

@@ -1,4 +1,4 @@
-/* vanillabox 4.1 */
+/* vanillabox 4.2 */
 .vanillabox {
   color: #fff;
   background: rgba(0, 0, 0, 0.7);
@@ -12,11 +12,14 @@
   left: 0;
   right: 0;
   bottom: 0;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, 0s visibility 0s;
+  visibility: visible;
   pointer-events: all;
   opacity: 1;
 }
 .vanillabox[aria-hidden] {
+  transition: opacity 0.2s, 0.2s visibility 0s;
+  visibility: hidden;
   pointer-events: none;
   opacity: 0;
 }
@@ -94,7 +97,7 @@
   opacity: 0;
   padding-bottom: 0.2em;
 }
-@media (min-height: 10em) {
+@media (min-height: 20em) {
   .vanillabox-prev,
   .vanillabox-next {
     bottom: 50%;
