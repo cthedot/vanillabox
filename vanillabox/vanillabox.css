@@ -1,4 +1,4 @@
-/* vanillabox 4.2 */
+/* vanillabox 4.3 */
 .vanillabox {
   color: #fff;
   background: rgba(0, 0, 0, 0.7);
@@ -201,6 +201,7 @@
 .vanillabox-item img,
 .vanillabox-html,
 .vanillabox-html video {
+  touch-action: none;
   position: relative;
   display: block;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
