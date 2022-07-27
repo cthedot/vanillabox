@@ -7,7 +7,7 @@
  *    $element: One or more DOM elements of <a> containing
  *    links to big images each containing a thumbnail image itself
  */
-; (function () {
+(function () {
   'use strict'
 
   // Polyfills for e.g. IE
@@ -148,6 +148,7 @@
   var $next
   var $items = []
   var $focusBefore
+  var setupDone = false
 
   function setup() {
     // once only
@@ -165,7 +166,7 @@
       '<button class="prefix-next prefix-button" type="button"></button>'
     ]
       .join('')
-      .replace(/prefix\-/g, prefix + '-')
+      .replace(/prefix-/g, prefix + '-')
 
     $vanillabox
       .querySelectorAll('.' + prefix + '-item')
@@ -214,7 +215,7 @@
         }
       })
     }
-    setup = false
+    setupDone = true
   }
 
   function keyHandler(e) {
@@ -490,7 +491,9 @@
     var boxes = []
 
     // once only
-    setup && setup()
+    if (!setupDone) {
+      setup()
+    }
 
     $containers.forEach(function ($container) {
       var srcs = []
@@ -558,7 +561,9 @@
     })
     return boxes.length === 1 ? boxes[0] : boxes
   }
-  vanillabox.VERSION = 4.4
+  vanillabox.VERSION = 4.5
 
   window.vanillabox = vanillabox
 })()
+
+
